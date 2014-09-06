@@ -1,4 +1,4 @@
-Pipeline_Matlab
+Pipeline
 =============================================================================
 Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 BrainModes Research Group (head: P. Ritter)
