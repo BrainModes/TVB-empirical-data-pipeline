@@ -1,4 +1,16 @@
 #!/bin/bash
+# =============================================================================
+# Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+# BrainModes Research Group (head: P. Ritter)
+# Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+# Correspondence: petra.ritter@charite.de
+#
+# When using this code please cite as follows:
+# Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+# Constructing subject-specific Virtual Brains from multimodal neuroimaging
+#
+# Last Change: 08-06-2014
+
 #This Script processes the fMRI BOLD Data of the subject using FSL & FREESURFER
 #Required Inputs
 # 1. The path to the subjectfolder including the rawdata

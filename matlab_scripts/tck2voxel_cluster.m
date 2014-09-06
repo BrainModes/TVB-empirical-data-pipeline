@@ -1,4 +1,16 @@
 function tck = tck2voxel_cluster(tck,affine_matrix)
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% Last Change: 08-06-2014
+
 %This function converts the Scanner coordinates from MRTRix's tck-Files to
 %Voxel Coordinates using the affine Transformation matrix inside the header
 %of a reference image (e.g. the Brainmask used for tracking!)

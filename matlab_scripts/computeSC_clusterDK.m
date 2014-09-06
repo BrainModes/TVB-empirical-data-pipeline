@@ -1,4 +1,16 @@
 function computeSC_cluster68(tck_filestem,tck_suffix,wmborder_file,roi,outfile)
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% Last Change: 08-06-2014
+
 tic
 display(['Computing SC for ROI ' num2str(roi) '.']);
 load('../masks_68/affine_matrix.mat')

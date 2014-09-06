@@ -6,6 +6,8 @@ function tracks = read_mrtrix_tracks (filename)
 % format track file 'filename' (i.e. files with the extension '.tck'). 
 % The track data will be stored as a cell array in the 'data' field of the
 % return variable.
+%
+% Source: MRTrix (http://www.brain.org.au/software/mrtrix/)
 
 image.comments = {};
 

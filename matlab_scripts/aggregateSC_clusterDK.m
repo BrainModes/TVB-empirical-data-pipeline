@@ -1,4 +1,16 @@
 function aggregateSC68(outfile,wmborder_file, subID)
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% Last Change: 08-06-2014
+
 %Parameters:
 %   outfile - String; Filename of the resulting File, e.g. 'subDA_SC.mat'
 %   wmborder - .mat-File; 3D-Array containing the Imagecube of the

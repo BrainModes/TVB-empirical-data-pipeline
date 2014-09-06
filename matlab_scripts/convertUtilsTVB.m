@@ -1,4 +1,16 @@
 function convertUtilsTVB(subID,subFolder,brainstormPath,reconallPath)
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% Last Change: 08-06-2014
+
 % INPUT:
 %   subID               ---     The identifier of the subject (must also be
 %                               the one used within brainstorm!)
