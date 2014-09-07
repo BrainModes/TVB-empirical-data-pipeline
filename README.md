@@ -1,5 +1,7 @@
-Pipeline
+Empirical processing pipeline for The Virtual Brain
 =============================================================================
+Constructing subject specific virtual brains
+
 Authors: Michael Schirner, Simon Rothmeier, Petra Ritter<br>
 BrainModes Research Group (head: P. Ritter)<br>
 Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany<br>
