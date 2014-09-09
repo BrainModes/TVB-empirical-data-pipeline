@@ -22,7 +22,9 @@ Used software packages:
 How to use the pipeline:
 =============================================================================
 <ol>
-<li>Data structure:</li>
+<li>Data structure:<br>
+<img src="doc/initTree.png"/></li>
+<li>Initialize the scripts:</li>
 <li>Process a specific subject:</li>
 <li>Check the results:</li>
 <li>In case of errors....</li>
