@@ -42,7 +42,16 @@ After this is done, open the script <b style="color:red;">pipeSetup.sh</b> and e
 </li>
 <li><b>Process a specific subject:</b>
 To tun the pipeline using the dataset for a specific subject, simply execute the following:
-<p style="border:1px dashed #cccccc;">sfafadf</p>
+<p style="border:1px dashed #cccccc;">./runPipeline.sh -s JohnDoe -a J_D</p>
+The pipeline will now run fully automated as a background process. A .log-file is placed in the folder. Using this file it is possible to monitor how far the 
+execution of the pipeline has already progressed. Furthermore the process ID (PID) is displayed in this file which can be used to kill 
+the background process in case something went wrong.<br>
+The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 16h per subject.
 </li>
-<li><b>Check the results:</b></li>
+<li><b>Check the results:</b>
+The resulting SC matrices are placed in the folder:
+<p style="border:1px dashed #cccccc;">/home/yourUserName/pipeline/JohnDoe/mrtrix_68/tracks_68/JD_SC.mat</p>
+The FC matrix is placed in the folder
+<p style="border:1px dashed #cccccc;">/home/yourUserName/pipeline/JohnDoe/bold/JD_fMRI_new.mat</p>
+</li>
 </ol>
