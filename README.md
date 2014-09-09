@@ -23,6 +23,8 @@ How to use the pipeline:
 =============================================================================
 <br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the OAR job scheduler. Hence all commands 
 in the scripts fore submitting computational jobs must be replaced when using a different scheduling system!</br>
+Also the required software packages (FREESURFER, FSL and MRTrix) have to be installed or the executables have to be placed inside a folder accessable for the executing user.<br>
+GNU Octave has to be installed system-wide and executable for the job scheduler.
 <ol>
 <li><b>Data structure:</b><br>
 <img src="doc/initTree.png"/><br>
