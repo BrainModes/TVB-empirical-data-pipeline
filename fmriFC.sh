@@ -16,20 +16,8 @@
 # 1. The path to the subjectfolder including the rawdata
 # 2. The name of the subjectfolder
 
-#Set Paths FREESUFER
-FREESURFER_HOME=/home/petra/freesurfer/freesurfer
-SUBJECTS_DIR=${FREESURFER_HOME}/subjects
-FUNCTIONALS_DIR=${FREESURFER_HOME}/sessions
-PATH=${PATH}:${FREESURFER_HOME}/bin
-export FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR PATH
-source ${FREESURFER_HOME}/FreeSurferEnv.sh
-source ${FREESURFER_HOME}/SetUpFreeSurfer.sh 
-
-#Set Paths for FSL
-FSLDIR=/home/petra/DTI_Tracking/bin/fsl
-. ${FSLDIR}/etc/fslconf/fsl.sh
-PATH=${FSLDIR}/bin:${PATH}
-export FSLDIR PATH
+#Init all Toolboxes
+source ./pipeSetup.sh
 
 path=$1
 pfx=$2

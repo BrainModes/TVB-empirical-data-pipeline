@@ -11,14 +11,14 @@
 #
 # Last Change: 08-06-2014
 
+#Init all Toolboxes
+source ./pipeSetup.sh
+
 #Report PID
 echo "The PID: $$"
 
 subID=$1
 split=$2
-
-#Set the rootPath
-export rootPath=/home/petra/Simon/autoPipe
 
 ### 1.) The Preprocessinge-Job ####################################
 oarsub -n pipe_${subID} -l walltime=16:00:00 -p "host > 'n01'" "${rootPath}/preprocDK.sh ${rootPath}/ ${subID} ${split}"

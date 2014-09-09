@@ -21,11 +21,25 @@ Used software packages:
 </ul>
 How to use the pipeline:
 =============================================================================
+<br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the OAR job scheduler. Hence all commands 
+in the scripts fore submitting computational jobs must be replaced when using a different scheduling system!</br>
 <ol>
-<li>Data structure:<br>
-<img src="doc/initTree.png"/></li>
-<li>Initialize the scripts:</li>
-<li>Process a specific subject:</li>
-<li>Check the results:</li>
-<li>In case of errors....</li>
+<li><b>Data structure:</b><br>
+<img src="doc/initTree.png"/>
+First, make sure that the data structure inside your subject folder looks exactly like displayed in the picture above.
+This means that inside your actual subject folder, there must be a folder named "RAWDATA", containing the different
+MR images recorded by using the three different imaging modalities (anatomical, DTI, fMRI).<br>
+Inside each of these folders, there should be a subfolder named according to the abbreviation of your subject ID containing the first letters of the forename and the first one of the family name (e.g. for the subject-ID
+JohnDoe, the abbreviation would be J_D). Note that this is not mandatory i.e. you can choose whatever abbreviation wanted as long as the chosen schema is kept consistently throughout the whole RAWDATA folders.<br>
+The DICOM files produced by your MR-scanner thus have to be placed in their according abbreviation-subfolders.
+</li>
+<li><br>Initialize the scripts:</br>
+All the scripts found in this repository must be placed in the same folder on the cluster. Currently, also the subject folders
+have to be placed in this pipeline-folder. The resulting folder structure should look like follows:
+<img src="doc/scriptTree.png" />
+After this is done, open the script <b style="color:red;">pipeSetup.sh</b> and edit the paths in the file accordingly to your setup
+(e.g. by using a text editor inside the terminal like nano).
+</li>
+<li><br>Process a specific subject:</br></li>
+<li><br>Check the results:</br></li>
 </ol>

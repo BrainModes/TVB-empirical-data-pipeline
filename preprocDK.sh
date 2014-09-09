@@ -55,27 +55,8 @@
 ####### New Checks
 
 
-#Set Paths FREESUFER
-FREESURFER_HOME=/home/petra/freesurfer/freesurfer
-SUBJECTS_DIR=${FREESURFER_HOME}/subjects
-FUNCTIONALS_DIR=${FREESURFER_HOME}/sessions
-PATH=${PATH}:${FREESURFER_HOME}/bin
-export FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR PATH
-source ${FREESURFER_HOME}/FreeSurferEnv.sh
-source ${FREESURFER_HOME}/SetUpFreeSurfer.sh 
-
-#Set Paths for FSL
-FSLDIR=/home/petra/DTI_Tracking/bin/fsl
-. ${FSLDIR}/etc/fslconf/fsl.sh
-PATH=${FSLDIR}/bin:${PATH}
-export FSLDIR PATH
-
-#Set Paths for MRTrix
-MRTrixDIR=/home/petra/DTI_Tracking/bin/mrtrix_hotfix/
-LD_LIBRARY_PATH=${MRTrixDIR}/lib/
-export LD_LIBRARY_PATH
-PATH=${MRTrixDIR}/bin:${PATH}
-export PATH
+#Init all Toolboxes
+source ./pipeSetup.sh
 
 ######### Define Einvornment Variables ###############
 path=$1

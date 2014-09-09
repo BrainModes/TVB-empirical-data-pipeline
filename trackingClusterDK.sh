@@ -23,12 +23,8 @@
 
 #Usually this file is called by the batch script created by the MATLAB Script createMasks.m
 
-#Set Paths for MRTrix
-MRTrixDIR=/home/petra/DTI_Tracking/bin/mrtrix_hotfix/
-LD_LIBRARY_PATH=${MRTrixDIR}/lib/
-export LD_LIBRARY_PATH
-PATH=${MRTrixDIR}/bin:${PATH}
-export PATH
+#Init all Toolboxes
+source ./pipeSetup.sh
 
 export subjpath=${1}/mrtrix_68
 export maskfolder=${subjpath}/masks_68
