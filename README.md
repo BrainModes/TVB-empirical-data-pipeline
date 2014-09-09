@@ -33,14 +33,14 @@ Inside each of these folders, there should be a subfolder named according to the
 JohnDoe, the abbreviation would be J_D). Note that this is not mandatory i.e. you can choose whatever abbreviation wanted as long as the chosen schema is kept consistently throughout the whole RAWDATA folders.<br>
 The DICOM files produced by your MR-scanner thus have to be placed in their according abbreviation-subfolders.
 </li>
-<li><b>Initialize the scripts:</b>
+<li><b>Initialize the scripts:</b><br>
 All the scripts found in this repository must be placed in the same folder on the cluster. Currently, also the subject folders
 have to be placed in this pipeline-folder. The resulting folder structure should look like follows:<br>
 <img src="doc/scriptTree.png" /><br>
 After this is done, open the script <b style="color:red;">pipeSetup.sh</b> and edit the paths in the file accordingly to your setup
 (e.g. by using a text editor inside the terminal like nano).
 </li>
-<li><b>Process a specific subject:</b>
+<li><b>Process a specific subject:</b><br>
 To tun the pipeline using the dataset for a specific subject, simply execute the following:
 <p style="border:1px dashed #cccccc;">./runPipeline.sh -s JohnDoe -a J_D</p>
 The pipeline will now run fully automated as a background process. A .log-file is placed in the folder. Using this file it is possible to monitor how far the 
@@ -48,7 +48,7 @@ execution of the pipeline has already progressed. Furthermore the process ID (PI
 the background process in case something went wrong.<br>
 The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 16h per subject.
 </li>
-<li><b>Check the results:</b>
+<li><b>Check the results:</b><br>
 The resulting SC matrices are placed in the folder:
 <p style="border:1px dashed #cccccc;">/home/yourUserName/pipeline/JohnDoe/mrtrix_68/tracks_68/JD_SC.mat</p>
 The FC matrix is placed in the folder
