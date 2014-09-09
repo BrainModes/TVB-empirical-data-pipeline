@@ -1,22 +1,11 @@
 function aggregateSC68(outfile,wmborder_file, subID)
-% =============================================================================
-% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
-% BrainModes Research Group (head: P. Ritter)
-% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
-% Correspondence: petra.ritter@charite.de
-%
-% When using this code please cite as follows:
-% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
-% Constructing subject-specific Virtual Brains from multimodal neuroimaging
-%
-% Last Change: 08-06-2014
-
 %Parameters:
 %   outfile - String; Filename of the resulting File, e.g. 'subDA_SC.mat'
 %   wmborder - .mat-File; 3D-Array containing the Imagecube of the
 %               parcellated gmwmborder
 %   subID - String; The Identiefier of the Subject, e.g. 'DA'
 
+steplength = 0.2; %steplength of the tracking in mm
 
 wmborder.img = load(wmborder_file);
 region_table = [1001:1003,1005:1035,2001:2003,2005:2035];
@@ -35,11 +24,11 @@ SC_cap_agg_tmp(length(region_id_table)).e=[];
 SC_cap_agg_bwflav1 = zeros(68,68);
 SC_cap_agg_bwflav2 = zeros(68,68);
 SC_cap_agg_counts = zeros(68,68);
-SC_dist_agg_steps(68,68).dist=[];
-SC_dist_median_agg_steps = zeros(68,68);
-SC_dist_mean_agg_steps = zeros(68,68);
-SC_dist_var_agg_steps = zeros(68,68);
-SC_dist_mode_agg_steps = zeros(68,68);
+SC_dist_agg(68,68).dist=[];
+SC_dist_median_agg = zeros(68,68);
+SC_dist_mean_agg = zeros(68,68);
+SC_dist_var_agg = zeros(68,68);
+SC_dist_mode_agg = zeros(68,68);
 
 for roi = 1:68,
     clear SC_cap SC_dist
@@ -53,8 +42,8 @@ for roi = 1:68,
     end
     
     for roi2 = 1:68,
-        SC_dist_agg_steps(roi,roi2).dist=[SC_dist_agg_steps(roi,roi2).dist;SC_dist(roi,roi2).dist];
-        SC_dist_agg_steps(roi2,roi).dist=[SC_dist_agg_steps(roi2,roi).dist;SC_dist(roi2,roi).dist];
+        SC_dist_agg(roi,roi2).dist=[SC_dist_agg(roi,roi2).dist;SC_dist(roi,roi2).dist];
+        SC_dist_agg(roi2,roi).dist=[SC_dist_agg(roi2,roi).dist;SC_dist(roi2,roi).dist];
     end
 end
 
@@ -71,36 +60,32 @@ end
  
 for roi = 1:68,
     for roi2 = 1:68,
-        if ~isempty(SC_dist_agg_steps(roi,roi2).dist),
-            SC_cap_agg_counts(roi,roi2) = length(SC_dist_agg_steps(roi,roi2).dist);
-            SC_dist_median_agg_steps(roi,roi2) = median(SC_dist_agg_steps(roi,roi2).dist);
-            SC_dist_mean_agg_steps(roi,roi2) = mean(SC_dist_agg_steps(roi,roi2).dist);
-            SC_dist_var_agg_steps(roi,roi2) = var(SC_dist_agg_steps(roi,roi2).dist);
-            SC_dist_mode_agg_steps(roi,roi2) = mode(SC_dist_agg_steps(roi,roi2).dist);
+        if ~isempty(SC_dist_agg(roi,roi2).dist),
+            %Incorporate the steplength
+            SC_dist_agg(roi,roi2).dist = SC_dist_agg(roi,roi2).dist * steplength;
+            
+            SC_cap_agg_counts(roi,roi2) = length(SC_dist_agg(roi,roi2).dist);
+            SC_dist_median_agg(roi,roi2) = median(SC_dist_agg(roi,roi2).dist);
+            SC_dist_mean_agg(roi,roi2) = mean(SC_dist_agg(roi,roi2).dist);
+            SC_dist_var_agg(roi,roi2) = var(SC_dist_agg(roi,roi2).dist);
+            SC_dist_mode_agg(roi,roi2) = mode(SC_dist_agg(roi,roi2).dist);
         end
     end
 end
 
-%String to explain how to get from steps to length
-steps2lenght = 'The steplength used for this tracking was 0.2mm/step. So for instance, a track length of 10 steps means 2mm.';
 
 %Normalize the Cap.Matrices
-SC_cap_agg_bwflav1_norm = (SC_cap_agg_bwflav1 - min(min(SC_cap_agg_bwflav1)))/(max(max(SC_cap_agg_bwflav1)) - min(min(SC_cap_agg_bwflav1)));
-SC_cap_agg_bwflav2_norm = (SC_cap_agg_bwflav2 - min(min(SC_cap_agg_bwflav2)))/(max(max(SC_cap_agg_bwflav2)) - min(min(SC_cap_agg_bwflav2)));
+numTracks = sum(SC_cap_agg_counts(:));
+avgSeedingVoxels = 1; %Average over 50 Subjects
+SC_cap_agg_counts_norm = SC_cap_agg_counts / numTracks * avgSeedingVoxels;
+SC_cap_agg_bwflav1_norm = SC_cap_agg_bwflav1 / numTracks * avgSeedingVoxels;
+SC_cap_agg_bwflav2_norm = SC_cap_agg_bwflav2 / numTracks * avgSeedingVoxels;
+
+%Log
+SC_cap_agg_counts_norm_log = log(SC_cap_agg_counts_norm);
+SC_cap_agg_bwflav1_norm_log = log(SC_cap_agg_bwflav1_norm);
+SC_cap_agg_bwflav2_norm_log = log(SC_cap_agg_bwflav2_norm);
 
 
-save(outfile,'-mat7-binary', 'steps2lenght', 'SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2', 'SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_dist_agg_steps', 'SC_dist_mean_agg_steps', 'SC_dist_mode_agg_steps', 'SC_dist_median_agg_steps', 'SC_dist_var_agg_steps')
+save(outfile,'-mat7-binary', 'SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2','SC_cap_agg_counts_norm','SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_cap_agg_counts_norm_log','SC_cap_agg_bwflav1_norm_log','SC_cap_agg_bwflav2_norm_log','SC_dist_agg', 'SC_dist_mean_agg', 'SC_dist_mode_agg', 'SC_dist_median_agg', 'SC_dist_var_agg')
 end
-
-%{
-
-
-fileID = fopen('batch_agg.sh','w');
-
-
-fprintf(fileID, ['oarsub -l walltime=06:40:00 "octave --eval \\"aggregateSC_new(''subCN_SC.mat'',''/home/petra/DTI_Tracking/data/subCN/Tracking_Masks/wmborder.mat'', ''subCN'')\\""\n']);
-
-
-fclose(fileID);
-
-%}
