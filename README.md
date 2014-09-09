@@ -10,12 +10,14 @@ Correspondence: petra.ritter@charite.de<br>
 When using this code please cite as follows:<br>
 Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)<br>
 Constructing subject-specific Virtual Brains from multimodal neuroimaging<br>
-<br>
-=============================================================================
-niak (Neuroimaging Analysis Kit) is third party software for MATLAB, licensed under the MIT License.<br>
-Please see: https://code.google.com/p/niak/
 =============================================================================
 Used software packages:
 <ul>
 <li>FREESURFER (https://surfer.nmr.mgh.harvard.edu)</li>
+<li>FSL (http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)</li>
+<li>MRTrix (http://www.brain.org.au/software/)</li>
+<li>GNU Octave (http://www.gnu.org/software/octave/)</li>
+<li>NIAK (Neuroimaging Analysis Kit; MATLAB toolbox) (https://code.google.com/p/niak/)</li>
 </ul>
+=============================================================================
+How to use the pipeline:
