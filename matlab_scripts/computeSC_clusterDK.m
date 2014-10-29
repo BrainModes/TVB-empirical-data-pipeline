@@ -9,7 +9,7 @@ function computeSC_clusterDK(tck_filestem,tck_suffix,wmborder_file,roi,outfile)
 % Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 % Constructing subject-specific Virtual Brains from multimodal neuroimaging
 %
-% Last Change: 08-06-2014
+% Last Change: 10-29-2014
 
 tic
 display(['Computing SC for ROI ' num2str(roi) '.']);
@@ -24,6 +24,7 @@ for regid = [1001:1003,1005:1035,2001:2003,2005:2035],
 end
 SC_cap(length(region_id_table)).e=[];
 SC_dist(length(region_table),length(region_table)).dist=[];
+SC_dist_new(length(region_id_table)).e=[];
 
 % Count the numbers of failure tracks
 off_seed=0;
@@ -80,11 +81,16 @@ for region = roi,
                                 SC_cap(seed_id).e=[SC_cap(seed_id).e;target_id]; %Add a Connection from Seedvoxel to Targetvoxel
                                 SC_cap(target_id).e=[SC_cap(target_id).e;seed_id]; %Add a Connection from Targetvoxel to Seedvoxel
 
+                                % Old distances computation
                                 r1=find(region_table==pathids(end)); %Transfer the Indexnr. from Desikan-Numbering (i.e. 1001-2035) to a Matrix-Numbering (i.e. 1-68)
                                 r2=find(region_table==pathids(inregids(end)));
 
                                 SC_dist(r1,r2).dist=[SC_dist(r1,r2).dist;tracklen]; %Add the distance of the current track to a pool of distances between the two ROIS
                                 SC_dist(r2,r1).dist=[SC_dist(r2,r1).dist;tracklen];
+                                
+                                % New distances computation
+                                SC_dist_new(seed_id).e=[SC_dist_new(seed_id).e;tracklen]; %Add a Connection from Seedvoxel to Targetvoxel
+                                SC_dist_new(target_id).e=[SC_dist_new(target_id).e;tracklen]; %Add a Connection from Targetvoxel to Seedvoxel
 
                             else
                                 wrong_seed=wrong_seed+1;
@@ -107,7 +113,8 @@ for region = roi,
 end
 
 for i = 1:length(region_id_table),
-    SC_cap(i).e=unique(SC_cap(i).e); %Filter out the redundant connections i.e. just count distinct connections    
+    [SC_cap(i).e, ia, ~]=unique(SC_cap(i).e); %Filter out the redundant connections i.e. just count distinct connections  
+    SC_dist_new(i).e=SC_dist_new(i).e(ia); %Only take the length of the distinct connections into account   
 end
 
 time=toc;
@@ -119,21 +126,3 @@ fclose(fopen(['../masks_68/counter/' num2str(roi) '.txt'], 'w'));
 
 
 end
-
-%{
-
-subID=['FR';'DA';'CN'];
-
-fileID = fopen('batch_compSC.sh','w');
-
-for i = 1:size(subID,1),
-
-wmborderfile=['/home/petra/DTI_Tracking/data/sub' subID(i,:) '/Tracking_Masks'];
-
-for roi=1:68,
-    fprintf(fileID, ['oarsub -l walltime=03:40:00 "octave --eval \\"computeSC_cluster(''./'',''_tracks' subID(i,:) '.tck'',''' wmborderfile ''',' num2str(roi) ', ''SC_row_' num2str(roi) subID(i,:) '.mat'')\\""\n']);
-end
-end
-
-fclose(fileID);
-%}

@@ -42,6 +42,11 @@ SC_dist_mean_agg = zeros(68,68);
 SC_dist_var_agg = zeros(68,68);
 SC_dist_mode_agg = zeros(68,68);
 
+%New Dist aggregation
+SC_dist_agg_new(68,68).dist=[];
+SC_dist_median_agg_new = zeros(68,68);
+SC_dist_mean_agg_new = zeros(68,68);
+
 for roi = 1:68,
     clear SC_cap SC_dist
     
@@ -51,8 +56,10 @@ for roi = 1:68,
     
     for ind_ind=1:length(region_id_table),
         SC_cap_agg_tmp(ind_ind).e=[SC_cap_agg_tmp(ind_ind).e;SC_cap(ind_ind).e];
+        SC_dist_agg_tmp(ind_ind).e=[SC_dist_agg_tmp(ind_ind).e;SC_dist_new(ind_ind).e];
     end
     
+    % Old distances aggregation
     for roi2 = 1:68,
         SC_dist_agg(roi,roi2).dist=[SC_dist_agg(roi,roi2).dist;SC_dist(roi,roi2).dist];
         SC_dist_agg(roi2,roi).dist=[SC_dist_agg(roi2,roi).dist;SC_dist(roi2,roi).dist];
@@ -60,19 +67,21 @@ for roi = 1:68,
 end
 
 for ind_ind=1:length(region_id_table),
-    SC_cap_agg_tmp(ind_ind).e=unique(SC_cap_agg_tmp(ind_ind).e); 
+    [SC_cap_agg_tmp(ind_ind).e ia, ~] = unique(SC_cap_agg_tmp(ind_ind).e); 
+    SC_dist_agg_tmp(ind_ind).e=SC_dist_agg_tmp(ind_ind).e(ia);
     
     seed_id=find(region_table==region_id_table(ind_ind,1));
     target_ids=inverse_region_table(region_id_table(SC_cap_agg_tmp(ind_ind).e,1));
     for ti=1:length(target_ids),
         SC_cap_agg_bwflav1(seed_id,target_ids(ti)) = SC_cap_agg_bwflav1(seed_id,target_ids(ti)) + 1;
         SC_cap_agg_bwflav2(seed_id,target_ids(ti)) = SC_cap_agg_bwflav2(seed_id,target_ids(ti)) + (1/(length(target_ids)));
+        SC_dist_agg_new(seed_id,target_ids(ti)).dist=[SC_dist_agg_new(seed_id,target_ids(ti)).dist SC_dist_agg_tmp(ind_ind).e(ti)];
     end
 end
  
 for roi = 1:68,
     for roi2 = 1:68,
-        if ~isempty(SC_dist_agg(roi,roi2).dist),
+        if ~isempty(SC_dist_agg(roi,roi2).dist)
             %Incorporate the steplength
             SC_dist_agg(roi,roi2).dist = SC_dist_agg(roi,roi2).dist * steplength;
             
@@ -81,6 +90,13 @@ for roi = 1:68,
             SC_dist_mean_agg(roi,roi2) = mean(SC_dist_agg(roi,roi2).dist);
             SC_dist_var_agg(roi,roi2) = var(SC_dist_agg(roi,roi2).dist);
             SC_dist_mode_agg(roi,roi2) = mode(SC_dist_agg(roi,roi2).dist);
+        end
+        
+        if ~isempty(SC_dist_agg_new(roi,roi2).dist)
+            SC_dist_agg_new(roi,roi2).dist = SC_dist_agg_new(roi,roi2).dist * steplength;
+            
+            SC_dist_median_agg_new(roi,roi2) = median(SC_dist_agg_new(roi,roi2).dist);
+            SC_dist_mean_agg_new(roi,roi2) = mean(SC_dist_agg_new(roi,roi2).dist);
         end
     end
 end
@@ -99,5 +115,5 @@ SC_cap_agg_bwflav1_norm_log = log(SC_cap_agg_bwflav1_norm);
 SC_cap_agg_bwflav2_norm_log = log(SC_cap_agg_bwflav2_norm);
 
 
-save(outfile,'-mat7-binary', 'SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2','SC_cap_agg_counts_norm','SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_cap_agg_counts_norm_log','SC_cap_agg_bwflav1_norm_log','SC_cap_agg_bwflav2_norm_log','SC_dist_agg', 'SC_dist_mean_agg', 'SC_dist_mode_agg', 'SC_dist_median_agg', 'SC_dist_var_agg')
+save(outfile,'-mat7-binary','SC_dist_median_agg_new','SC_dist_mean_agg_new','SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2','SC_cap_agg_counts_norm','SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_cap_agg_counts_norm_log','SC_cap_agg_bwflav1_norm_log','SC_cap_agg_bwflav2_norm_log','SC_dist_agg', 'SC_dist_mean_agg', 'SC_dist_mode_agg', 'SC_dist_median_agg', 'SC_dist_var_agg')
 end
