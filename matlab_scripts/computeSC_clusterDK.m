@@ -1,4 +1,4 @@
-function computeSC_cluster68(tck_filestem,tck_suffix,wmborder_file,roi,outfile)
+function computeSC_clusterDK(tck_filestem,tck_suffix,wmborder_file,roi,outfile)
 % =============================================================================
 % Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 % BrainModes Research Group (head: P. Ritter)
