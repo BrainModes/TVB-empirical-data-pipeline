@@ -52,6 +52,9 @@ mri_convert -i RAWDATA/BOLD-EPI/*/IM-0001-0001.dcm --out_type nii -o ${folderNam
 #Convert the raw DICOM files to a single 3D-Nifti-File (T2)
 #mri_convert -i RAWDATA/T2w_2D/*/IM-0001-0001.dcm --out_type nii -o ${folderName}/T2.nii.gz
 
+#Get the number of DICOMs in the RAWDATA-folder
+numVol=$(ls -1 RAWDATA/BOLD-EPI/*/* | wc -l)
+
 cd $folderName
 
 ## NEW STUFF ---------------------------------->>>>
@@ -78,6 +81,7 @@ fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
 #Copy the generic feat Config to the subject Folder & insert the subID
 #!!! On Cluster: Change Path to Standard Image!
 cp ${path}/featConfig/default.fsf ./feat.fsf
+sed -i -e s/numvolGEN/${numVol}/g feat.fsf
 sed -i -e s/subGEN/${pfx}/g feat.fsf
 sed -i -e s~pathGEN~${path}~g feat.fsf
 #Run feat using the config created above

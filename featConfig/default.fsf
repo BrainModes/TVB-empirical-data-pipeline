@@ -50,7 +50,7 @@ set fmri(outputdir) "pathGEN/subGEN/bold/featDir"
 set fmri(tr) 1.940000
 
 # Total volumes
-set fmri(npts) 666
+set fmri(npts) numvolGEN
 
 # Delete volumes
 set fmri(ndelete) 5
