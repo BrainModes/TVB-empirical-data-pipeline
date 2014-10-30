@@ -295,10 +295,10 @@ set feat_files(1) "pathGEN/subGEN/bold/bold"
 set fmri(confoundevs) 0
 
 # Session's structural image for analysis 1
-set initial_highres_files(1) "pathGEN/subGEN/brainmask"
+set initial_highres_files(1) "pathGEN/subGEN/bold/brainmask"
 
 # Subject's structural image for analysis 1
-set highres_files(1) "pathGEN/subGEN/brainmask"
+set highres_files(1) "pathGEN/subGEN/bold/brainmask"
 
 # EV 1 title
 set fmri(evtitle1) ""
