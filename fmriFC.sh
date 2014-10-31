@@ -81,7 +81,7 @@ fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
 #Copy the generic feat Config to the subject Folder & insert the subID
 #!!! On Cluster: Change Path to Standard Image!
 cp ${path}/featConfig/default.fsf ./feat.fsf
-sed -i -e s/numvolGEN/${numVol}/g feat.fsf
+sed -i -e s/numvolGEN/$((numVol))/g feat.fsf
 sed -i -e s/subGEN/${pfx}/g feat.fsf
 sed -i -e s~pathGEN~${path}~g feat.fsf
 #Run feat using the config created above
