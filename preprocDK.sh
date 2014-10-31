@@ -91,7 +91,7 @@ T1=${path}/${pfx}/recon_all/mri/T1.mgz
 
 
 ######### Diffusion Data Preprocessing ################
-#Check if recon_all has been computed in the past
+#Check if dt_recon has been computed in the past
 if [ ! -d "dt_recon" ]; then
 echo "START dt_recon" >> $time_file
 date >> $time_file

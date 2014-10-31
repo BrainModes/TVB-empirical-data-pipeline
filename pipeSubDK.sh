@@ -44,6 +44,7 @@ done
 
 ### 3.) RUN the Tracking ####################################
 cp ${rootPath}/trackingClusterDK.sh ${rootPath}/${subID}/mrtrix_68/masks_68
+cp ${rootPath}/pipeSetup.sh ${rootPath}/${subID}/mrtrix_68/masks_68
 cd ${rootPath}/${subID}/mrtrix_68/masks_68
 mkdir counter
 chmod +x batch_track.sh
