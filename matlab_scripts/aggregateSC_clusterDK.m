@@ -9,7 +9,7 @@ function aggregateSC_clusterDK(outfile,wmborder_file, subID)
 % Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 % Constructing subject-specific Virtual Brains from multimodal neuroimaging
 %
-% Last Change: 10-29-2014
+% Last Change: 11-01-2014
 
 %Parameters:
 %   outfile - String; Filename of the resulting File, e.g. 'subDA_SC.mat'
@@ -32,6 +32,7 @@ for regid = [1001:1003,1005:1035,2001:2003,2005:2035],
     region_id_table=[region_id_table; regid*ones(length(tmpids),1), tmpids];    
 end
 SC_cap_agg_tmp(length(region_id_table)).e=[];
+SC_dist_agg_tmp(length(region_id_table)).e=[];
 
 SC_cap_agg_bwflav1 = zeros(68,68);
 SC_cap_agg_bwflav2 = zeros(68,68);
@@ -67,7 +68,7 @@ for roi = 1:68,
 end
 
 for ind_ind=1:length(region_id_table),
-    [SC_cap_agg_tmp(ind_ind).e ia, ~] = unique(SC_cap_agg_tmp(ind_ind).e); 
+    [SC_cap_agg_tmp(ind_ind).e,ia,~] = unique(SC_cap_agg_tmp(ind_ind).e); 
     SC_dist_agg_tmp(ind_ind).e=SC_dist_agg_tmp(ind_ind).e(ia);
     
     seed_id=find(region_table==region_id_table(ind_ind,1));
