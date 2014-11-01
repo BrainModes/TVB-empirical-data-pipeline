@@ -57,7 +57,7 @@ for roi = 1:68,
     
     for ind_ind=1:length(region_id_table),
         SC_cap_agg_tmp(ind_ind).e=[SC_cap_agg_tmp(ind_ind).e;SC_cap(ind_ind).e];
-        SC_dist_agg_tmp(ind_ind).e=[SC_dist_agg_tmp(ind_ind).e;SC_dist_new(ind_ind).e];
+        SC_dist_agg_tmp(ind_ind).e=[SC_dist_agg_tmp(ind_ind).e; SC_dist_new(ind_ind).e];
     end
     
     % Old distances aggregation
