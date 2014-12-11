@@ -39,7 +39,16 @@ generated_tracks=0;
 for region = roi,
     
     expected_tracks=expected_tracks+length(find(wmborder.img.img==region_table(region)))*200;    
-    tilefiles = dir([num2str(region_table(region)) '*.tck']);
+    %tilefiles = dir([num2str(region_table(region)) '*.tck']);
+    %More safe way (esp. when dealing with subcort Regions)
+    d = dir([num2str(region_table(region)) '*.tck']);
+    %Select only files that have a max. of 2 trailing numbers that depict the ordering...
+    % e.g. don't select the files like '10012_subID.tck' when processing
+    % the region 10 ...
+    i=regexp({d.name},['^' num2str(region_table(region)) '\d{1,2}_.*\.tck$']);
+    files={d(~cellfun('isempty',i))};
+    tilefiles = files{1};
+    clear d i files
     
     for tile = 1:length(tilefiles),
         if tilefiles(tile).bytes > 2000,

@@ -77,7 +77,7 @@ cd ${rootPath}/${subID}/mrtrix_68/tracks_68
 
 for i in {1..68}
 do
-  oarsub -n cSC_${i}_${subID} -l walltime=03:00:00 -p "host > 'n01'" "octave --eval \"computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')\"" > /dev/null
+  oarsub -n cSC_${i}_${subID} -l walltime=05:00:00 -p "host > 'n01'" "octave --eval \"computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')\"" > /dev/null
 done
 
 echo "computeSC jobs submitted"
@@ -101,6 +101,6 @@ rm -R counter/
 
 cd ${rootPath}/${subID}/mrtrix_68/tracks_68
 
-oarsub -n aggreg_${subID} -l walltime=01:10:00 -p "host > 'n01'" "octave --eval \"aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')\""
+oarsub -n aggreg_${subID} -l walltime=01:50:00 -p "host > 'n01'" "octave --eval \"aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')\""
 echo "aggregateSC job submitted"
 
