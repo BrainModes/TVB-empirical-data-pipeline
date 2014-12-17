@@ -21,6 +21,9 @@ mkdir([subPath 'mrtrix_68/'],'masks_68')
 seedsPerVoxel = 200;
 %seedsPerVoxel = 1000;
 
+%Mask Chunk Size
+chunkSize = 100000/seedsPerVoxel;
+
 %Extract and Save the Affine Matrix for later use
 %header = load_untouch_header_only([subPath 'wmoutline2diff_1mm.nii.gz']);
 %TODO: First uncompress into tmp-file, afterwards recompress!.....
@@ -72,10 +75,10 @@ for i = [1001:1003,1005:1035,2001:2003,2005:2035]
     tmpimg(tmpimg ~= i) = 0;
     tmpimg(tmpimg > 0) = 1;
     maskvoxel=find(tmpimg>0);
-    nummasks=floor(length(maskvoxel)/500);
+    nummasks=floor(length(maskvoxel)/chunkSize);
     for j = 1:nummasks,
         nii.img=zeros(size(tmpimg));
-        nii.img(maskvoxel(1+(500*(j-1)):(500*j))) = 1;
+        nii.img(maskvoxel(1+(chunkSize*(j-1)):(chunkSize*j))) = 1;
         %save_untouch_nii(nii,[mask_output_folder 'seedmask' num2str(i) num2str(j) '_1mm.nii']);
         nii.hdr.file_name = [mask_output_folder 'seedmask' num2str(i) num2str(j) '_1mm.nii.gz'];
         niak_write_vol(nii.hdr,nii.img);
@@ -89,7 +92,7 @@ for i = [1001:1003,1005:1035,2001:2003,2005:2035]
         numseeds(counter,3)=i;
     end
     nii.img=zeros(size(tmpimg));
-    nii.img(maskvoxel(1+(500*nummasks):end)) = 1;
+    nii.img(maskvoxel(1+(chunkSize*nummasks):end)) = 1;
     %save_untouch_nii(nii,[mask_output_folder 'seedmask' num2str(i) num2str((nummasks+1)) '_1mm.nii.gz']);
     nii.hdr.file_name = [mask_output_folder 'seedmask' num2str(i) num2str((nummasks+1)) '_1mm.nii.gz'];
     niak_write_vol(nii.hdr,nii.img);
