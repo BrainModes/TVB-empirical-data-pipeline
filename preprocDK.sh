@@ -131,7 +131,12 @@ rule=${path}/${pfx}/dt_recon/register.dat
 #Rotate high-res (1mm) WM-border to match dwi data w/o resampling
 mri_vol2vol --mov $lowb --targ $wm_outline --inv --interp nearest --o wmoutline2diff_1mm.nii --reg $rule --no-save-reg --no-resample
 #Rotate high-res (1mm) WM-border to match dwi data with resampling
-mri_vol2vol --mov $lowb --targ $wm_outline --inv --interp nearest --o wmoutline2diff.nii --reg $rule --no-save-reg
+mri_vol2vol --mov $lowb --targ $wm_outline --inv --o wmoutline2diff.nii.gz --reg $rule --no-save-reg
+#Filter out low voxels produced by trilin. interp.
+fslmaths wmoutline2diff.nii.gz -thr 0.1 wmoutline2diff.nii.gz
+#Binarize
+fslmaths wmoutline2diff.nii.gz -bin wmoutline2diff.nii.gz && gunzip wmoutline2diff.nii.gz
+
 #Rotate high-res (1mm) wmparc to match dwi data w/o resampling
 mri_vol2vol --mov $lowb --targ ${path}/${pfx}/recon_all/mri/wmparc.mgz --inv --interp nearest --o wmparc2diff_1mm.nii --reg $rule --no-save-reg --no-resample
 #Rotate high-res (1mm) aparc+aseg to match dwi data w/o resampling
