@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # =============================================================================
 # Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 # BrainModes Research Group (head: P. Ritter)
@@ -9,7 +10,16 @@
 # Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 # Constructing subject-specific Virtual Brains from multimodal neuroimaging
 #
-# Last Change: 08-06-2014
+# This software is distributed under the terms of the GNU General Public License
+# as published by the Free Software Foundation. Further details on the GPL
+# license can be found at http://www.gnu.org/copyleft/gpl.html.
+# 
+# FOR RESEARCH PURPOSES ONLY. THE SOFTWARE IS PROVIDED "AS IS," AND THE
+# UNIVERSITY OF SOUTHERN CALIFORNIA AND ITS COLLABORATORS DO NOT MAKE ANY
+# WARRANTY, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, NOR DO THEY ASSUME ANY
+# LIABILITY OR RESPONSIBILITY FOR THE USE OF THIS SOFTWARE.
+# =============================================================================
 
 #This Script processes the fMRI BOLD Data of the subject using FSL & FREESURFER
 #Required Inputs

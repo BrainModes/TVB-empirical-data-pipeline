@@ -36,6 +36,21 @@ function connectivity2TVBFS(subID,subFolder,SC_matrix,reconallFolder)
 %
 % 7. Hemisphere - hemisphere inclusion flag for connectivity regions; text file containing one boolean value on each line
 % (as 0 or 1 value) being 1 when corresponding region is in the right hemisphere and 0 when in left hemisphere.
+%
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% This software is distributed under the terms of the GNU General Public License
+% as published by the Free Software Foundation. Further details on the GPL
+% license can be found at http://www.gnu.org/copyleft/gpl.html.
+% =============================================================================
 
 files = cell(7,1);
 

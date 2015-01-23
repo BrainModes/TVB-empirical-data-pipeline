@@ -1,4 +1,5 @@
 function generateMasksDK(subPath,pathOnCluster)
+%
 % =============================================================================
 % Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 % BrainModes Research Group (head: P. Ritter)
@@ -9,7 +10,10 @@ function generateMasksDK(subPath,pathOnCluster)
 % Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 % Constructing subject-specific Virtual Brains from multimodal neuroimaging
 %
-% Last Change: 08-06-2014
+% This software is distributed under the terms of the GNU General Public License
+% as published by the Free Software Foundation. Further details on the GPL
+% license can be found at http://www.gnu.org/copyleft/gpl.html.
+% =============================================================================
 
 %Approx. Runtime on a MacBook Pro 13" 2011 Core i5 --> ~23min
 %This script is meant to be run locally for now!

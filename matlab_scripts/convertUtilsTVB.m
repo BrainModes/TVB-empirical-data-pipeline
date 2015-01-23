@@ -1,16 +1,4 @@
 function convertUtilsTVB(subID,subFolder,brainstormPath,reconallPath)
-% =============================================================================
-% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
-% BrainModes Research Group (head: P. Ritter)
-% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
-% Correspondence: petra.ritter@charite.de
-%
-% When using this code please cite as follows:
-% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
-% Constructing subject-specific Virtual Brains from multimodal neuroimaging
-%
-% Last Change: 08-06-2014
-
 % INPUT:
 %   subID               ---     The identifier of the subject (must also be
 %                               the one used within brainstorm!)
@@ -26,12 +14,27 @@ function convertUtilsTVB(subID,subFolder,brainstormPath,reconallPath)
 %
 % This script uses brainstorm functions, redefined below such that the
 % installation of brainstorm is not necessary!!
-
+%
 %Stuff that need to be exportet from the Brainstorm-Folder:
 % 1.) Headmask (full resolution) >> headmask
 % 2.) Cortex-Mesh (15k resolution) >> cortex
 % 3.) Channel Coordinates >> channels
 % 4.) OpenMEEG BEM >> headmodel
+%
+% =============================================================================
+% Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
+% BrainModes Research Group (head: P. Ritter)
+% Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany
+% Correspondence: petra.ritter@charite.de
+%
+% When using this code please cite as follows:
+% Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
+% Constructing subject-specific Virtual Brains from multimodal neuroimaging
+%
+% This software is distributed under the terms of the GNU General Public License
+% as published by the Free Software Foundation. Further details on the GPL
+% license can be found at http://www.gnu.org/copyleft/gpl.html.
+% =============================================================================
 
 cd(subFolder);
 mkdir('TVB')

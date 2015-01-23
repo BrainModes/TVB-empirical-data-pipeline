@@ -1,4 +1,10 @@
 function aggregateSC_clusterDK(outfile,wmborder_file, subID)
+%Parameters:
+%   outfile - String; Filename of the resulting File, e.g. 'subDA_SC.mat'
+%   wmborder - .mat-File; 3D-Array containing the Imagecube of the
+%               parcellated gmwmborder
+%   subID - String; The Identiefier of the Subject, e.g. 'DA'
+%
 % =============================================================================
 % Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 % BrainModes Research Group (head: P. Ritter)
@@ -9,13 +15,10 @@ function aggregateSC_clusterDK(outfile,wmborder_file, subID)
 % Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 % Constructing subject-specific Virtual Brains from multimodal neuroimaging
 %
-% Last Change: 11-01-2014
-
-%Parameters:
-%   outfile - String; Filename of the resulting File, e.g. 'subDA_SC.mat'
-%   wmborder - .mat-File; 3D-Array containing the Imagecube of the
-%               parcellated gmwmborder
-%   subID - String; The Identiefier of the Subject, e.g. 'DA'
+% This software is distributed under the terms of the GNU General Public License
+% as published by the Free Software Foundation. Further details on the GPL
+% license can be found at http://www.gnu.org/copyleft/gpl.html.
+% =============================================================================
 
 steplength = 0.2; %steplength of the tracking in mm
 

@@ -1,4 +1,13 @@
 function tck = tck2voxel_cluster(tck,affine_matrix)
+%This function converts the Scanner coordinates from MRTRix's tck-Files to
+%Voxel Coordinates using the affine Transformation matrix inside the header
+%of a reference image (e.g. the Brainmask used for tracking!)
+%INPUT:
+%tck - The Struct obtained via the MRTrix MATLAB function read_mrtrix_tracks
+%refimage - The NIFTI File with the affine Matrix in it's header
+%OUTPUT:
+%The tck-Struct with transformed coordinates
+%
 % =============================================================================
 % Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
 % BrainModes Research Group (head: P. Ritter)
@@ -9,16 +18,11 @@ function tck = tck2voxel_cluster(tck,affine_matrix)
 % Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)
 % Constructing subject-specific Virtual Brains from multimodal neuroimaging
 %
-% Last Change: 08-06-2014
+% This software is distributed under the terms of the GNU General Public License
+% as published by the Free Software Foundation. Further details on the GPL
+% license can be found at http://www.gnu.org/copyleft/gpl.html.
+% =============================================================================
 
-%This function converts the Scanner coordinates from MRTRix's tck-Files to
-%Voxel Coordinates using the affine Transformation matrix inside the header
-%of a reference image (e.g. the Brainmask used for tracking!)
-%INPUT:
-%tck - The Struct obtained via the MRTrix MATLAB function read_mrtrix_tracks
-%refimage - The NIFTI File with the affine Matrix in it's header
-%OUTPUT:
-%The tck-Struct with transformed coordinates
 
 %First load the header information of the image to get the matrix
 %header = load_untouch_header_only(refimage);
