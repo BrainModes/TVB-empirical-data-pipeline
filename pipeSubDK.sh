@@ -104,3 +104,13 @@ cd ${rootPath}/${subID}/mrtrix_68/tracks_68
 oarsub -n aggreg_${subID} -l walltime=01:50:00 -p "host > 'n01'" "octave --eval \"aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')\""
 echo "aggregateSC job submitted"
 
+### 6). Convert the Files into a single (TVB compatible) ZIP File ##############
+#First wait a reasonable amount of time...
+sleep 20m
+#Now check if the SC matrix is already saved onto the harddrive
+if [ ! -f ${rootPath}/${subID}/mrtrix_68/tracks_68/${subID}_SC.mat ]; then
+	oarsub -n conn2TVB_${subID} -l walltime=00:10:00 -p "host > 'n01'" "octave --eval \"connectivity2TVBFS('${subID}','${rootPath}/${subID}','${subID}_SC.mat','recon_all')\""
+	echo "connectivity2TVB job submitted"
+fi
+
+
