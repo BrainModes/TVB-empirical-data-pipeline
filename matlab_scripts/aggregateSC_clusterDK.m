@@ -114,10 +114,10 @@ SC_cap_agg_bwflav1_norm = SC_cap_agg_bwflav1 / numTracks * avgSeedingVoxels;
 SC_cap_agg_bwflav2_norm = SC_cap_agg_bwflav2 / numTracks * avgSeedingVoxels;
 
 %Log
-SC_cap_agg_counts_norm_log = log(SC_cap_agg_counts_norm);
-SC_cap_agg_bwflav1_norm_log = log(SC_cap_agg_bwflav1_norm);
-SC_cap_agg_bwflav2_norm_log = log(SC_cap_agg_bwflav2_norm);
+SC_cap_agg_counts_log = log(SC_cap_agg_counts_norm+1);
+SC_cap_agg_bwflav1_log = log(SC_cap_agg_bwflav1_norm+1);
+SC_cap_agg_bwflav2_log = log(SC_cap_agg_bwflav2_norm+1);
 
 
-save(outfile,'-mat7-binary','SC_dist_median_agg_new','SC_dist_mean_agg_new','SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2','SC_cap_agg_counts_norm','SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_cap_agg_counts_norm_log','SC_cap_agg_bwflav1_norm_log','SC_cap_agg_bwflav2_norm_log','SC_dist_agg', 'SC_dist_mean_agg', 'SC_dist_mode_agg', 'SC_dist_median_agg', 'SC_dist_var_agg')
+save(outfile,'-mat7-binary','SC_dist_median_agg_new','SC_dist_mean_agg_new','SC_cap_agg_counts', 'SC_cap_agg_bwflav1','SC_cap_agg_bwflav2','SC_cap_agg_counts_norm','SC_cap_agg_bwflav1_norm', 'SC_cap_agg_bwflav2_norm','SC_cap_agg_counts_log','SC_cap_agg_bwflav1_log','SC_cap_agg_bwflav2_log','SC_dist_agg', 'SC_dist_mean_agg', 'SC_dist_mode_agg', 'SC_dist_median_agg', 'SC_dist_var_agg')
 end
