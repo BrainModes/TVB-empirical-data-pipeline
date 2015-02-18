@@ -1,4 +1,4 @@
-function generateMasksDK(subPath,pathOnCluster)
+function generateMasksDK(subPath,pathOnCluster,multiShell)
 %
 % =============================================================================
 % Authors: Michael Schirner, Simon Rothmeier, Petra Ritter
@@ -18,8 +18,13 @@ function generateMasksDK(subPath,pathOnCluster)
 %Approx. Runtime on a MacBook Pro 13" 2011 Core i5 --> ~23min
 %This script is meant to be run locally for now!
 %tic
-mask_output_folder=[subPath 'mrtrix_68/masks_68/'];
-mkdir([subPath 'mrtrix_68/'],'masks_68')
+if(multiShell == 'true')
+    trackingTool = 'camino_68';
+else
+    trackingTool = 'mrtrix_68';
+end
+mask_output_folder=[subPath trackingTool '/masks_68/'];
+mkdir([subPath trackingTool '/'],'masks_68')
 
 %Set the desired Number of Seedpoints per voxel
 seedsPerVoxel = 200;

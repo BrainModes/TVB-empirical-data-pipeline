@@ -59,7 +59,7 @@ mkdir('TVB')
 cd TVB
 
 %Load the SC Matrices
-SC = load([subFolder '/mrtrix_68/tracks_68/' SC_matrix]);
+SC = load(SC_matrix);
 weights = SC.SC_cap_agg_bwflav2;
 %Check if the delay-matrix is in the new or the old formatting
 if (isfield(SC,'SC_dist_mean_agg'))

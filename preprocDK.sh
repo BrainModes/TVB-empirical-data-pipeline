@@ -65,6 +65,7 @@ source ./pipeSetup.sh
 path=$1
 pfx=$2
 pfx2=$3
+multiShell=$4
 
 cd ${path}/${pfx}
 
@@ -175,48 +176,65 @@ fslmaths $aparc -uthr 255 -thr 251 -add wmmask_1mm_68.nii wmmask_1mm_68.nii.gz
 #Combine & Binarize
 fslmaths wmmask_1mm_68.nii -add $wm_outline -bin wmmask_1mm_68.nii.gz 
 
+### Check for multiShell
+if [ $multiShell = true ]
+then
+	######### FSL bedpostx #################
+	cd ..
+	mkdir -p camino_68 && cd camino_68/
+	mkdir -p bedpostx
+	cp ../dt_recon/dwi.nii ./bedpostx/data.nii && gzip bedpostx/data.nii
+	cp ../calc_images/wmmask_68.nii.gz ./bedpostx/nodif_brain_mask.nii.gz
+	cp ../dt_recon/bvecs.dat ./bedpostx/bvecs
+	cp ../dt_recon/bvals.dat ./bedpostx/bvals
+	
+	echo "START bedpostx...this will take some time!" >> $time_file
+	date >> $time_file
+	bedpostx ${path}/${pfx}/camino_68/bedpostx -n 3 --model=2
+	
+else
+	######### MRTrix Preprocessing ###########################
+	echo "START MRTrix Preproc" >> $time_file
+	date >> $time_file
+
+	########Insert ECC Case here
+	#Correct the bvecs
+	#xfmrot dwi-ec.ecclog bvecs.dat bvecs-rot.dat
 
 
-######### MRTrix Preprocessing ###########################
-echo "START MRTrix Preproc" >> $time_file
-date >> $time_file
+	cd ..
+	mkdir -p mrtrix_68
+	cd mrtrix_68
+	mrconvert ${path}/${pfx}/calc_images/wmmask_68.nii.gz wmmask.mif
+	mrconvert ${path}/${pfx}/calc_images/wmmask_1mm_68.nii.gz wmmask_1mm.mif
+	mkdir -p tracks_68
 
-########Insert ECC Case here
-#Correct the bvecs
-#xfmrot dwi-ec.ecclog bvecs.dat bvecs-rot.dat
+	#Convert RAWDATA to MRTrix Format
+	mrconvert ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ dwi.mif
+	#Export the btable in MRTrix Format
+	mrinfo ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ -grad btable.b
 
+	#Diffusion tensor images
+	dwi2tensor dwi.mif -grad btable.b dt.mif
+	#Fractional anisotropy (FA) map
+	tensor2FA dt.mif fa.mif
+	#Remove noisy background by multiplying the FA Image with the binary brainmask
+	mrmult fa.mif wmmask.mif fa_corr.mif
+	#Eigenvector (EV) map
+	tensor2vector dt.mif ev.mif
+	#Scale the EV map by the FA Image
+	mrmult ev.mif fa_corr.mif ev_scaled.mif
 
-cd ..
-mkdir -p mrtrix_68
-cd mrtrix_68
-mrconvert ${path}/${pfx}/calc_images/wmmask_68.nii.gz wmmask.mif
-mrconvert ${path}/${pfx}/calc_images/wmmask_1mm_68.nii.gz wmmask_1mm.mif
-mkdir -p tracks_68
+	#Mask of single-fibre voxels
+	erode wmmask.mif -npass 1 - | mrmult fa_corr.mif - - | threshold - -abs 0.7 sf.mif
+	#Response function coefficient
+	estimate_response dwi.mif -grad btable.b sf.mif response.txt
+	#CSD computation
+	#csdeconv dwi.mif -grad btable.b response.txt -lmax 8 -mask wmmask.mif CSD8.mif
+	csdeconv dwi.mif -grad btable.b response.txt -mask wmmask.mif CSD8.mif
+	#csdeconv dwi.mif -grad btable.b response.txt -lmax 6 -mask wmmask.mif CSD8.mif
 
-#Convert RAWDATA to MRTrix Format
-mrconvert ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ dwi.mif
-#Export the btable in MRTrix Format
-mrinfo ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ -grad btable.b
-
-#Diffusion tensor images
-dwi2tensor dwi.mif -grad btable.b dt.mif
-#Fractional anisotropy (FA) map
-tensor2FA dt.mif fa.mif
-#Remove noisy background by multiplying the FA Image with the binary brainmask
-mrmult fa.mif wmmask.mif fa_corr.mif
-#Eigenvector (EV) map
-tensor2vector dt.mif ev.mif
-#Scale the EV map by the FA Image
-mrmult ev.mif fa_corr.mif ev_scaled.mif
-
-#Mask of single-fibre voxels
-erode wmmask.mif -npass 1 - | mrmult fa_corr.mif - - | threshold - -abs 0.7 sf.mif
-#Response function coefficient
-estimate_response dwi.mif -grad btable.b sf.mif response.txt
-#CSD computation
-#csdeconv dwi.mif -grad btable.b response.txt -lmax 8 -mask wmmask.mif CSD8.mif
-csdeconv dwi.mif -grad btable.b response.txt -mask wmmask.mif CSD8.mif
-#csdeconv dwi.mif -grad btable.b response.txt -lmax 6 -mask wmmask.mif CSD8.mif
+fi
 
 ##Tell the Mothership we're done here...
 touch ${path}/${pfx}/donePipe.txt

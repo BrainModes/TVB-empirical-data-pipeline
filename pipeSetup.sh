@@ -28,6 +28,15 @@ FSLDIR=/home/petra/DTI_Tracking/bin/fsl
 #Set Paths for MRTrix
 MRTrixDIR=/home/petra/DTI_Tracking/bin/mrtrix_hotfix/
 
+#Set Paths for Camino
+export caminoRoot='/home/petra/DTI_Tracking/bin/camino/bin/'
+PATH=${PATH}:${caminoRoot}
+export PATH
+
+export javaRoot='/home/petra/DTI_Tracking/bin/jre1.8.0_31/bin/'
+PATH=${PATH}:${javaRoot}
+export PATH
+
 
 ###################################################################
 # Additional stuff required to be executed for using the toolboxes.
@@ -48,3 +57,5 @@ LD_LIBRARY_PATH=${MRTrixDIR}/lib/
 export LD_LIBRARY_PATH
 PATH=${MRTrixDIR}/bin:${PATH}
 export PATH
+
+export CAMINO_HEAP_SIZE=8000 #Allows Camino to use up to 8GB of RAM

@@ -18,9 +18,10 @@
 # 1. <subjectID> e.g. CN
 path=$1
 pfx=$2
+multiShell=$3
 
 cd ${path}/matlab_scripts
-octave --eval "addpath(genpath('${path}/niak')); generateMasksDK('${path}/${pfx}/','${path}/${pfx}/')"
+octave --eval "addpath(genpath('${path}/niak')); generateMasksDK('${path}/${pfx}/','${path}/${pfx}/','${multiShell}')"
 
 ##Tell the Mothership we're done here...
 touch ${path}/${pfx}/doneMask.txt
