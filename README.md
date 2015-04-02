@@ -1,5 +1,4 @@
-Empirical processing pipeline for The Virtual Brain
-
+<h1>Empirical processing pipeline for The Virtual Brain</h1>
 =============================================================================
 Constructing subject specific virtual brains
 
