@@ -17,7 +17,7 @@ Used software packages:
 <li>FSL (http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/)</li>
 <li>MRTrix (http://www.brain.org.au/software/)</li>
 <li>GNU Octave (http://www.gnu.org/software/octave/)</li>
-<li>NIAK (Neuroimaging Analysis Kit; MATLAB toolbox) (https://code.google.com/p/niak/)</li>
+<li>NIAK (Neuroimaging Analysis Kit; MATLAB toolbox) (https://www.nitrc.org/projects/niak/)</li>
 </ul>
 How to use the pipeline:
 =============================================================================
