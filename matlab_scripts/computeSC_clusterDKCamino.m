@@ -161,41 +161,38 @@ function tracks = read_camino_trackfile(trackFileName)
 %Init
 tracks = struct();
 tracks.data = {};
+index = 1;
 
-%Open the file using big-endian coding
-f = fopen(trackFileName,'r', 'b');
+%Read file
+fid= fopen(trackFileName,'r','b');
+synthData=fread(fid,'float');
+%Close file
+fclose(fid);
 
-%Init the counter
-counter = 1;
-
-%Loop through the file
-while ~feof(f)
+while(1)
     
-    %Get the length of the next track
-    trackLength = floor(fread(f,1,'float'));
+    try
+        %Get track length
+        trackLength = synthData(index);
+    catch
+        break;
+    end
     
-    %Get the seeding point of the current track
-    seedPoint = round(fread(f,1,'float'));
+    %Second point in the array is alway the index of the seedpoint inside
+    %the current track
+    %seedPoint = synthData(index + 1);
     
-    %TODO: Include failsafe using seedpoint i.e. seedpoint must be equal to
-    % 1 or the last point in the array!
+    %Now extract the actual track
+    %Ordering in the array is: x1-y1-z1-x2-y2-z2-...
+    xyz = [synthData(index+2:3:trackLength*3 + index-1) synthData(index+3:3:trackLength*3+1 + index-1) synthData(index+4:3:trackLength*3+2 + index-1)];
     
-    %Extract the coords for the track-points
-    xyz = fread(f,[3 trackLength], 'float');
+    %Increase the index
+    index = index + trackLength*3 + 2;
     
     %Save into struct
-    tracks.data{counter} = xyz';
-    
-    %Increase the counter
-    counter = counter +1;
+    tracks.data{end+1} = xyz;
     
 end
-
-%Close the file
-fclose(f);
-
-%Remove the last entry because it's empty...
-tracks.data(end) = [];
 
 end
 
