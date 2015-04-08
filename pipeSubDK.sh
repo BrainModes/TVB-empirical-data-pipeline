@@ -24,7 +24,8 @@ subID=$1
 split=$2
 
 ### 1.) The Preprocessinge-Job ####################################
-oarsub -n pipe_${subID} -l walltime=16:00:00 -p "host > 'n01'" "${rootPath}/preprocDK.sh ${rootPath}/ ${subID} ${split}"
+#oarsub -n pipe_${subID} -l walltime=16:00:00 -p "host > 'n01'" "${rootPath}/preprocDK.sh ${rootPath}/ ${subID} ${split}"
+sbatch -J pipe_${subID} -t 16:00:00 -N 1 -n 1 -o pipe_${subID}.o%j ${rootPath}/preprocDK.sh ${rootPath}/ ${subID} ${split}
 echo "Wait for the Preprocessing-Job to finish"
 sleep 4h
 #Loop until the job has finished
@@ -34,10 +35,12 @@ do
 done
 
 ### 2.1) RUN functional Processing ##########################
-oarsub -n fc_${subID} -l walltime=02:00:00 -p "host > 'n01'" "${rootPath}/fmriFC.sh ${rootPath}/ ${subID}"
+#oarsub -n fc_${subID} -l walltime=02:00:00 -p "host > 'n01'" "${rootPath}/fmriFC.sh ${rootPath}/ ${subID}"
+sbatch -J fc_${subID} -o fc_${subID}.o%j -N 1 -n 1 -t 02:00:00 ${rootPath}/fmriFC.sh ${rootPath}/ ${subID}
 
 ### 2.2) RUN generateMask.m ##################################
-oarsub -n Mask_${subID} -l walltime=01:00:00 -p "host > 'n01'" "${rootPath}/genMaskDK.sh ${rootPath} ${subID}"
+#oarsub -n Mask_${subID} -l walltime=01:00:00 -p "host > 'n01'" "${rootPath}/genMaskDK.sh ${rootPath} ${subID}"
+sbatch -J Mask_${subID} -o Mask_${subID}.o%j -N 1 -n 1 -t 01:00:00 ${rootPath}/genMaskDK.sh ${rootPath} ${subID}
 echo "Wait fo the Mask-Job to finish"
 sleep 17m
 while [ ! -f ${rootPath}/${subID}/doneMask.txt ]
@@ -80,7 +83,8 @@ cd ${rootPath}/${subID}/mrtrix_68/tracks_68
 
 for i in {1..68}
 do
-  oarsub -n cSC_${i}_${subID} -l walltime=05:00:00 -p "host > 'n01'" "octave --eval \"computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')\"" > /dev/null
+  #oarsub -n cSC_${i}_${subID} -l walltime=05:00:00 -p "host > 'n01'" "octave --eval \"computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')\"" > /dev/null
+  sbatch -J cSC_${i}_${subID} -o cSC_${i}_${subID}.o%j -N 1 -n 1 -t 05:00:00 octave --eval "computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')"
 done
 
 echo "computeSC jobs submitted"
@@ -104,7 +108,8 @@ rm -R counter/
 
 cd ${rootPath}/${subID}/mrtrix_68/tracks_68
 
-oarsub -n aggreg_${subID} -l walltime=01:50:00 -p "host > 'n01'" "octave --eval \"aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')\""
+#oarsub -n aggreg_${subID} -l walltime=01:50:00 -p "host > 'n01'" "octave --eval \"aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')\""
+sbatch -J aggreg_${subID} -o aggreg_${subID}.o%j -t 01:50:00 -N 1 -n 1 octave --eval "aggregateSC_clusterDK('${subID}_SC.mat','${rootPath}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')"
 echo "aggregateSC job submitted"
 
 ### 6). Convert the Files into a single (TVB compatible) ZIP File ##############
@@ -112,7 +117,8 @@ echo "aggregateSC job submitted"
 sleep 20m
 #Now check if the SC matrix is already saved onto the harddrive
 if [ ! -f ${rootPath}/${subID}/mrtrix_68/tracks_68/${subID}_SC.mat ]; then
-	oarsub -n conn2TVB_${subID} -l walltime=00:10:00 -p "host > 'n01'" "octave --eval \"connectivity2TVBFS('${subID}','${rootPath}/${subID}','${subID}_SC.mat','recon_all')\""
+	#oarsub -n conn2TVB_${subID} -l walltime=00:10:00 -p "host > 'n01'" "octave --eval \"connectivity2TVBFS('${subID}','${rootPath}/${subID}','${subID}_SC.mat','recon_all')\""
+	sbatch -J conn2TVB_${subID} -o conn2TVB_${subID}.o%j -t 00:10:00 -N 1 -n 1 octave --eval "connectivity2TVBFS('${subID}','${rootPath}/${subID}','${subID}_SC.mat','recon_all')"
 	echo "connectivity2TVB job submitted"
 fi
 

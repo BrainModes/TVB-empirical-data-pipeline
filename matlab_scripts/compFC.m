@@ -56,6 +56,8 @@ ROI_ID_table = dlmread([path '/' statFile]);
 FC_cc=corr(fMRI);
 FC_mi=FastPairMI(zscore(fMRI)',0.3);
 
+%Fix for possible NaN values
+FC_cc(isnan(FC_cc)) = 0;
 
 v = genvarname([subName '_ROIts']);
 eval([v '= fMRI;']);
