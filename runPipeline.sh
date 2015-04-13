@@ -51,12 +51,15 @@ elif [ "$split" == "none" ]
 fi
 ### Check Input ###
 
-#Run the Script in background
-nohup ./pipeSubDK.sh ${subID} ${split} >& pipe_${subID}.log &
-echo "The pipeline is now running in the background. Check the logs (pipe_${subID}.log). Come back again in ~16h"
+rootPath=$(pwd)
 
+#Run the Script in background
+nohup ./pipeSubDK.sh ${subID} ${split} ${rootPath} >& logfiles/pipe_${subID}.log &
 #Get the PID of the previously submitted pipeline call...
 pipe_PID=$!
+
+echo "The pipeline is now running in the background. Check the logs (pipe_${subID}.log). Come back again in ~16h"
+
 #Now ensure that the pipeline is stopped after a timeout even if it got stuck!
 sleep 48h
 kill $pipe_PID

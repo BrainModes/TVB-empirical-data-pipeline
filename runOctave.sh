@@ -14,16 +14,13 @@
 # license can be found at http://www.gnu.org/copyleft/gpl.html.
 # =============================================================================
 
-# Required arguments:
-# 1. <subjectID> e.g. CN
-path=$1
-pfx=$2
-rootPath=$3
+octaveCommand=$1
 
-cd ${path}/matlab_scripts
+#Init
 module load octave
-octave --eval "addpath(genpath('${rootPath}/niak')); generateMasksDK('${path}/${pfx}/','${path}/${pfx}/')"
-module unload octave
 
-##Tell the Mothership we're done here...
-touch ${path}/${pfx}/doneMask.txt
+#Exec octave command
+octave --eval "${octaveCommand}"
+
+#Unload
+module unload octave

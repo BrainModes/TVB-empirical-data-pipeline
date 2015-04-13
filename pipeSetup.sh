@@ -17,28 +17,32 @@
 #This file holds the paths to the local installations of the Toolboxes required to execute the Pipeline
 #
 #Set the rootPath i.e. the folder holding the shell scripts for the pipeline
-export rootPath=/home/petra/Simon/autoPipe
+export rootPath=/home1/03510/srothmei/tvbPipe
+
+#Set the path to the folder holding the subject files
+export subFolder=/work/03510/srothmei/subjects
 
 #Set Paths FREESUFER
-FREESURFER_HOME=/home/petra/freesurfer/freesurfer
+#FREESURFER_HOME=/home/petra/freesurfer/freesurfer
+module load freesurfer
 
 #Set Paths for FSL
-FSLDIR=/home/petra/DTI_Tracking/bin/fsl
+FSLDIR=/home1/03510/srothmei/bin/fsl
 
 #Set Paths for MRTrix
-MRTrixDIR=/home/petra/DTI_Tracking/bin/mrtrix_hotfix/
+MRTrixDIR=/home1/03510/srothmei/bin/mrtrix_hotfix
 
 
 ###################################################################
 # Additional stuff required to be executed for using the toolboxes.
 # Edit on own risk from here
 ###################################################################
-SUBJECTS_DIR=${FREESURFER_HOME}/subjects
-FUNCTIONALS_DIR=${FREESURFER_HOME}/sessions
-PATH=${PATH}:${FREESURFER_HOME}/bin
-export FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR PATH
-source ${FREESURFER_HOME}/FreeSurferEnv.sh
-source ${FREESURFER_HOME}/SetUpFreeSurfer.sh 
+#SUBJECTS_DIR=${FREESURFER_HOME}/subjects
+#FUNCTIONALS_DIR=${FREESURFER_HOME}/sessions
+#PATH=${PATH}:${FREESURFER_HOME}/bin
+#export FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR PATH
+#source ${FREESURFER_HOME}/FreeSurferEnv.sh
+#source ${FREESURFER_HOME}/SetUpFreeSurfer.sh 
 
 . ${FSLDIR}/etc/fslconf/fsl.sh
 PATH=${FSLDIR}/bin:${PATH}

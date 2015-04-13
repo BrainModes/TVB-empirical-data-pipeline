@@ -39,7 +39,7 @@ echo "START Bold Processing" >> $folderName/time.txt
 date >> $folderName/time.txt
 
 #FREESURFER Workaround
-SUBJECTS_DIR=$path/${pfx}
+SUBJECTS_DIR=${path}/${pfx}
 
 #Use aparc.a2009s+aseg volume mask from anatomical preprocessing
 #cd recon_all/
@@ -83,7 +83,7 @@ fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
 ##Preprocessing
 #Copy the generic feat Config to the subject Folder & insert the subID
 #!!! On Cluster: Change Path to Standard Image!
-cp ${path}/featConfig/default.fsf ./feat.fsf
+cp ${rootPath}/featConfig/default.fsf ./feat.fsf
 sed -i -e s/numvolGEN/$((numVol))/g feat.fsf
 sed -i -e s/subGEN/${pfx}/g feat.fsf
 sed -i -e s~pathGEN~${path}~g feat.fsf
@@ -120,5 +120,6 @@ rm ../${folderName}/aparc_stats_tmp.txt
 echo "END Bold Processing" >> time.txt
 date >> time.txt
 
-cd ${path}/matlab_scripts
+cd ${rootPath}/matlab_scripts
+module load octave
 octave --eval "compFC('${path}/${pfx}/${folderName}','${pfx}')"

@@ -137,7 +137,7 @@ fprintf(fileID,'#!/bin/bash\n');
 slashes = strfind(subPath,'/'); %Find all occurences of the slash in the subPath
 for roiid=1:size(seedcount,1),
     %fprintf(fileID, ['oarsub -n trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -l walltime=06:00:00 -p "host > ''n01''" "./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '"\n']);
-	fprintf(fileID, ['sbatch -J trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -N 1 -n 1 -o trk_' subPath(slashes(end-1)+1:slashes(end)-1) '.o%j -t 02:30:00 ./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
+	fprintf(fileID, ['sbatch -J trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -N 1 -n 1 -p normal -o trk_' subPath(slashes(end-1)+1:slashes(end)-1) '.o%j -t 02:30:00 ./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
 end
 fclose(fileID);
 
