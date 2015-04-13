@@ -61,6 +61,5 @@ pipe_PID=$!
 echo "The pipeline is now running in the background. Check the logs (pipe_${subID}.log). Come back again in ~16h"
 
 #Now ensure that the pipeline is stopped after a timeout even if it got stuck!
-sleep 48h
-kill $pipe_PID
+nohup ./killPipe.sh ${pipe_PID} >& logfiles/pipe_${subID}.kill &
 

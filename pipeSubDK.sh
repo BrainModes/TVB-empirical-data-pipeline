@@ -26,7 +26,7 @@ source ${setupPath}/pipeSetup.sh
 
 ### 1.) The Preprocessinge-Job ####################################
 #oarsub -n pipe_${subID} -l walltime=16:00:00 -p "host > 'n01'" "${rootPath}/preprocDK.sh ${rootPath}/ ${subID} ${split}"
-sbatch -J pipe_${subID} -t 16:00:00 -N 1 -n 1 -p normal -o pipe_${subID}.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} ${split}
+sbatch -J pipe_${subID} -t 12:00:00 -n 16 -p normal -o pipe_${subID}.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} ${split}
 echo "Wait for the Preprocessing-Job to finish"
 sleep 4h
 #Loop until the job has finished

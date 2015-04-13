@@ -84,7 +84,7 @@ date >> $time_file
 #Get the Name of the First file in the Dicom-Folder
 firstFile=$(ls ${path}/${pfx}/RAWDATA/MPRAGE/${pfx2}/ | sort -n | head -1)
 
-recon-all -i ${path}/${pfx}/RAWDATA/MPRAGE/${pfx2}/${firstFile} -subjid recon_all -sd ${path}/${pfx} -all
+recon-all -i ${path}/${pfx}/RAWDATA/MPRAGE/${pfx2}/${firstFile} -subjid recon_all -sd ${path}/${pfx} -openmp 16 -all
 mri_convert --in_type mgz --out_type nii --out_orientation RAS ${path}/${pfx}/recon_all/mri/aparc+aseg.mgz ${path}/${pfx}/recon_all/mri/aparc+aseg.nii
 
 fi
