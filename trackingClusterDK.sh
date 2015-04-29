@@ -40,7 +40,7 @@ do
 		echo "\n Currently Processing ROI $roi\n" 
 	
 		streamtrack SD_PROB ${subjpath}/CSD8.mif -seed $maskfolder/seedmask${seedmaskindex}_1mm.nii.gz \
-			-include $maskfolder/targetmask${roi}_1mm.nii.gz  -length 300 -stop \
+			-include $maskfolder/targetmask${roi}_1mm.nii.gz  -minlength 30 -stop \
 			-mask ${1}/calc_images/wmmask_1mm_68.nii.gz -nomaskinterp -unidirectional -quiet -num $seedCount \
 			${subjpath}/tracks_68/${seedmaskindex}_tracksCN.tck
 			
