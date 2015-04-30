@@ -74,7 +74,7 @@ save([mask_output_folder 'wmborder.mat'], 'img')
 counter=0;
 for i = [1001:1003,1005:1035,2001:2003,2005:2035]
     display(['Processing RegionID ' num2str(i)]);
-    
+
     tmpimg=wmborder.img;
     tmpimg(tmpimg ~= i) = 0;
     tmpimg(tmpimg > 0) = 1;
@@ -108,7 +108,7 @@ for i = [1001:1003,1005:1035,2001:2003,2005:2035]
     numseeds(counter,1)=str2num(tmpfind);
     numseeds(counter,2)=length(find(nii.img>0));
     numseeds(counter,3)=i;
-        
+
     tmpimg=wmborder.img;
     tmpimg(tmpimg == i) = 0;
     tmpimg(tmpimg > 0) = 1;
@@ -116,7 +116,7 @@ for i = [1001:1003,1005:1035,2001:2003,2005:2035]
     %save_untouch_nii(nii,[mask_output_folder 'targetmask' num2str(i) '_1mm.nii.gz']);
     nii.hdr.file_name = [mask_output_folder 'targetmask' num2str(i) '_1mm.nii.gz'];
     niak_write_vol(nii.hdr,nii.img);
-    
+
     %Gzip the Files (saves lots of storage space but may slow down the process)
     %compress([mask_output_folder 'targetmask' num2str(i) '_1mm.nii']);
 end
@@ -131,13 +131,14 @@ dlmwrite([mask_output_folder 'seedcount.txt'],numseeds,'delimiter', ' ','precisi
 %Generate Batch File
 load([mask_output_folder 'seedcount.txt'])
 fileID = fopen([mask_output_folder 'batch_track.sh'],'w');
-fprintf(fileID,'#!/bin/bash\n');
+%fprintf(fileID,'#!/bin/bash\n');
 %fprintf(fileID,'export jid=$1\n');
 
 slashes = strfind(subPath,'/'); %Find all occurences of the slash in the subPath
 for roiid=1:size(seedcount,1),
     %fprintf(fileID, ['oarsub -n trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -l walltime=06:00:00 -p "host > ''n01''" "./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '"\n']);
-	fprintf(fileID, ['sbatch -J trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -N 1 -n 1 -p normal -o trk_' subPath(slashes(end-1)+1:slashes(end)-1) '.o%j -t 02:30:00 ./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
+	  %fprintf(fileID, ['sbatch -J trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -N 1 -n 1 -p normal -o trk_' subPath(slashes(end-1)+1:slashes(end)-1) '.o%%j -t 02:30:00 ./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
+    fprintf(fileID, [pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
 end
 fclose(fileID);
 
@@ -153,7 +154,3 @@ end
 function uncompress(fileName)
     gunzip({fileName})
 end
-
-
-
-

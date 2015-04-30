@@ -19,44 +19,6 @@
 # 2. The name of the subjectfolder
 # 3. The chiffre used to store the DICOMs in the subfolder, usually just the two letters, se below
 #Example: ./pipeline_final.sh /home/petra/DTI_Tracking/toronto subQL Q_L
-######################New Checks!
-#p : Path to Subject
-#s : Subjectname
-#ecc : Perform an Eddy Curent Correction (default is none)
-# usage="usage: $0 -p PATH -s subject [-ecc]"
-# 
-# ecc_flag=off
-# pfx=none
-# subPath=none
-# while [ $# -gt 0 ]
-# do
-#     case "$1" in
-#         -ecc) ecc_flag=on;;
-# 	-s) pfx="$2"; shift;;
-# 	-p) subPath="$2"; shift;;
-# 	-*) echo >&2 \
-# 	    $usage
-# 	    exit 1;;
-# 	*)  break;;	# terminate while loop
-#     esac
-#     shift
-# done
-# #Check if -p & -s have been set
-# if [ "$pfx" == "none" ]
-# 	then
-# 		echo >&2 \
-# 		"Subjectname is missing! +++" \
-# 	    $usage
-# 	    exit 1;
-# elif [ "$subPath" == "none" ]
-# 	then
-# 		echo >&2 \
-# 		"Path is missing! +++" \
-# 	    $usage
-# 	    exit 1;
-# fi
-####### New Checks
-
 
 #Init all Toolboxes
 source ./pipeSetup.sh
@@ -173,7 +135,7 @@ fslmaths $aparc -uthr 41 -thr 41 wmmask_1mm_68.nii.gz
 fslmaths $aparc -uthr 2 -thr 2 -add wmmask_1mm_68.nii wmmask_1mm_68.nii.gz
 fslmaths $aparc -uthr 255 -thr 251 -add wmmask_1mm_68.nii wmmask_1mm_68.nii.gz
 #Combine & Binarize
-fslmaths wmmask_1mm_68.nii -add $wm_outline -bin wmmask_1mm_68.nii.gz 
+fslmaths wmmask_1mm_68.nii -add $wm_outline -bin wmmask_1mm_68.nii.gz
 
 
 
@@ -220,19 +182,3 @@ csdeconv dwi.mif -grad btable.b response.txt -mask wmmask.mif CSD8.mif
 
 ##Tell the Mothership we're done here...
 touch ${path}/${pfx}/donePipe.txt
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
