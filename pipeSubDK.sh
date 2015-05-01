@@ -48,9 +48,10 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 ### 3.) RUN the Tracking ####################################
 cp ${rootPath}/trackingClusterDK.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cp ${rootPath}/pipeSetup.sh ${subFolder}/${subID}/mrtrix_68/masks_68
+cp  ${rootPath}/runTracking.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cd ${subFolder}/${subID}/mrtrix_68/masks_68
 mkdir counter
-sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o trk_${subID}.o%%j -t 03:30:00 cat batch_track.sh | xargs -n 2 -P 192 ./trackingClusterDK.sh > $jobFile
+sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o trk_${subID}.o%%j -t 03:30:00 ./runTracking.sh > $jobFile
 echo "Tracking jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
@@ -69,7 +70,7 @@ if [ ! -f "compSCcommand.txt" ]; then
 fi
 
 #Now submit the job....
-sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o cSC_${subID}.o%j -n 68 -p normal -t 05:00:00 cat batch_track.sh | xargs -n 1 -P 68 ./runOctave.sh > $jobFile
+sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o cSC_${subID}.o%j -n 68 -p normal -t 05:00:00 ./runCompSC.sh > $jobFile
 echo "computeSC jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
