@@ -36,7 +36,7 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 
 ### 2.1) RUN functional Processing ##########################
 #oarsub -n fc_${subID} -l walltime=02:00:00 -p "host > 'n01'" "${rootPath}/fmriFC.sh ${rootPath}/ ${subID}"
-sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/fc_${subID}.o%j -N 1 -n 1 -p normal -t 04:00:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
+sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/fc_${subID}.o%j -N 1 -n 1 -p normal -t 10:00:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
 
 ### 2.2) RUN generateMask.m ##################################
 #oarsub -n Mask_${subID} -l walltime=01:00:00 -p "host > 'n01'" "${rootPath}/genMaskDK.sh ${rootPath} ${subID}"
