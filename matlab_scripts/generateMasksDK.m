@@ -129,16 +129,16 @@ numseeds(numseeds(:,2) == 0,:) = [];
 dlmwrite([mask_output_folder 'seedcount.txt'],numseeds,'delimiter', ' ','precision',10);
 
 %Generate Batch File
-load([mask_output_folder 'seedcount.txt'])
+%load([mask_output_folder 'seedcount.txt'])
 fileID = fopen([mask_output_folder 'batch_track.sh'],'w');
 %fprintf(fileID,'#!/bin/bash\n');
 %fprintf(fileID,'export jid=$1\n');
 
-slashes = strfind(subPath,'/'); %Find all occurences of the slash in the subPath
-for roiid=1:size(seedcount,1),
+%slashes = strfind(subPath,'/'); %Find all occurences of the slash in the subPath
+for roiid=1:size(numseeds,1),
     %fprintf(fileID, ['oarsub -n trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -l walltime=06:00:00 -p "host > ''n01''" "./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '"\n']);
 	  %fprintf(fileID, ['sbatch -J trk_' subPath(slashes(end-1)+1:slashes(end)-1) ' -N 1 -n 1 -p normal -o trk_' subPath(slashes(end-1)+1:slashes(end)-1) '.o%%j -t 02:30:00 ./trackingClusterDK.sh ' pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
-    fprintf(fileID, [pathOnCluster ' ' num2str(seedcount(roiid,1)) '\n']);
+    fprintf(fileID, [pathOnCluster ' ' num2str(numseeds(roiid,1)) ' ' num2str(numseeds(roiid,2)) ' ' num2str(numseeds(roiid,3)) '\n']);
 end
 fclose(fileID);
 
