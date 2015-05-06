@@ -60,6 +60,9 @@ numVol=$(ls -1 RAWDATA/BOLD-EPI/*/* | wc -l)
 
 cd $folderName
 
+#Get the number of voxels in the 4D timeseries (bold.nii.gz)
+numVox=$(fslstats bold.nii.gz -v | cut -f 1 -d " ")
+
 ## NEW STUFF ---------------------------------->>>>
 #Convert freesurfer brainmask to NIFTI
 mri_convert --in_type mgz --out_type nii ${SUBJECTS_DIR}/recon_all/mri/brainmask.mgz brainmask.nii.gz
@@ -85,6 +88,7 @@ fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
 #!!! On Cluster: Change Path to Standard Image!
 cp ${rootPath}/featConfig/default.fsf ./feat.fsf
 sed -i -e s/numvolGEN/$((numVol))/g feat.fsf
+sed -i -e s/numvoxGEN/$((numVox))/g feat.fsf
 sed -i -e s/subGEN/${pfx}/g feat.fsf
 sed -i -e s~pathGEN~${path}~g feat.fsf
 #Run feat using the config created above

@@ -30,7 +30,7 @@ module load freesurfer
 FSLDIR=/home1/03510/srothmei/bin/fsl
 
 #Set Paths for MRTrix
-MRTrixDIR=/home1/03510/srothmei/bin/mrtrix_hotfix
+MRTrixDIR=/home1/03510/srothmei/bin/mrtrix-0.2
 
 
 ###################################################################
@@ -42,7 +42,7 @@ MRTrixDIR=/home1/03510/srothmei/bin/mrtrix_hotfix
 #PATH=${PATH}:${FREESURFER_HOME}/bin
 #export FREESURFER_HOME SUBJECTS_DIR FUNCTIONALS_DIR PATH
 #source ${FREESURFER_HOME}/FreeSurferEnv.sh
-#source ${FREESURFER_HOME}/SetUpFreeSurfer.sh 
+#source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
 
 . ${FSLDIR}/etc/fslconf/fsl.sh
 PATH=${FSLDIR}/bin:${PATH}

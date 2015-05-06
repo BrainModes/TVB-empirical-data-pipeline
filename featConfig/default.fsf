@@ -231,7 +231,7 @@ set fmri(tsplot_yn) 1
 set fmri(reg_yn) 1
 
 # Registration to initial structural
-set fmri(reginitial_highres_yn) 1
+set fmri(reginitial_highres_yn) 0
 
 # Search space for registration to initial structural
 # 0   : No search
@@ -276,13 +276,13 @@ set fmri(regstandard_dof) 6
 set fmri(regstandard_nonlinear_yn) 0
 
 # Control nonlinear warp field resolution
-set fmri(regstandard_nonlinear_warpres) 10 
+set fmri(regstandard_nonlinear_warpres) 10
 
 # High pass filter cutoff
 set fmri(paradigm_hp) 100
 
 # Total voxels
-set fmri(totalVoxels) 87293952
+set fmri(totalVoxels) numvoxGEN
 
 
 # Number of lower-level copes feeding into higher-level analysis
