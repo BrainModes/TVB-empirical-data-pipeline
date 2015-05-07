@@ -52,3 +52,6 @@ LD_LIBRARY_PATH=${MRTrixDIR}/lib/
 export LD_LIBRARY_PATH
 PATH=${MRTrixDIR}/bin:${PATH}
 export PATH
+
+#Include GNU parallel
+PATH=/home1/03510/srothmei/bin:${PATH}
