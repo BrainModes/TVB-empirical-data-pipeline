@@ -63,13 +63,13 @@ cd $folderName
 #Get the number of voxels in the 4D timeseries (bold.nii.gz)
 numVox=$(fslstats bold.nii.gz -v | cut -f 1 -d " ")
 
-## NEW STUFF ---------------------------------->>>>
 #Convert freesurfer brainmask to NIFTI
 mri_convert --in_type mgz --out_type nii ${SUBJECTS_DIR}/recon_all/mri/brainmask.mgz brainmask.nii.gz
 #Mask the brainmask using aparc+aseg
 mri_convert --in_type mgz --out_type nii ${SUBJECTS_DIR}/recon_all/mri/aparc+aseg.mgz aparc+aseg.nii.gz
-fslmaths aparc+aseg.nii.gz -bin aparc+aseg_bin.nii.gz
-fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
+#fslmaths aparc+aseg.nii.gz -bin aparc+aseg_bin.nii.gz
+#fslmaths brainmask.nii.gz -mul aparc+aseg_bin.nii.gz brainmask.nii.gz
+fslmaths brainmask.nii.gz -nan brainmask.nii.gz
 
 ## FIELDMAP Correction
 #Convert DICOMS to Nifti

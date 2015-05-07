@@ -261,7 +261,7 @@ set fmri(regstandard_yn) 0
 set fmri(alternateReference_yn) 0
 
 # Standard image
-set fmri(regstandard) "/home/petra/DTI_Tracking/bin/fsl/data/standard/MNI152_T1_2mm_brain"
+set fmri(regstandard) "/home1/03510/srothmei/bin/fsl/data/standard/MNI152_T1_2mm_brain"
 
 # Search space for registration to standard space
 # 0   : No search
