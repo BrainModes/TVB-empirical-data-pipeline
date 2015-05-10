@@ -54,18 +54,21 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 ### 4.) RUN computeSC_cluster_new.m #########################
 cp ${rootPath}/matlab_scripts/*.m ${subFolder}/${subID}/mrtrix_68/tracks_68
 cp ${rootPath}/runOctave.sh ${subFolder}/${subID}/mrtrix_68/tracks_68
+cp ${rootPath}/runCompSC.sh ${subFolder}/${subID}/mrtrix_68/tracks_68
+cp ${rootPath}/pipeSetup.sh ${subFolder}/${subID}/mrtrix_68/tracks_68
 cd ${subFolder}/${subID}/mrtrix_68/tracks_68
+chmod +x *.sh
 
 #Generate a set of commands for the SC-jobs...
 if [ ! -f "compSCcommand.txt" ]; then
 	for i in {1..68}
 	do
-	 echo "\"computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')\"" >> compSCcommand.txt
+	 echo "computeSC_clusterDK('./','_tracks${subID}.tck','../masks_68/wmborder.mat',${i},'SC_row_${i}${subID}.mat')" >> compSCcommand.txt
 	done
 fi
 
 #Now submit the job....
-sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_compSC.o%j -n 68 -p normal -t 05:00:00 ./runCompSC.sh > $jobFile
+sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_compSC.o%j -n 68 -p normal -t 03:30:00 ./runCompSC.sh > $jobFile
 echo "computeSC jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
