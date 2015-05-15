@@ -20,14 +20,16 @@
 #Example: ./runPipeline.sh -s CN_20120324 -a C_N
 
 ### Check Input ###
-export usage="Example: ./pipeline.sh -s CN_20120324 -a C_N"
+export usage="Example: ./pipeline.sh -s CN_20120324 -a C_N -m jon@doe.com"
 export subID=none
 export split=none
+export emailAdress=none
 while [ $# -gt 0 ]
 do
     case "$1" in
 	-s) subID="$2"; shift;;
 	-a) split="$2"; shift;;
+  -m) emailAdress="$2"; shift;;
 	-*) echo >&2 \
 	    $usage
 	    exit 1;;
@@ -54,7 +56,7 @@ fi
 rootPath=$(pwd)
 
 #Run the Script in background
-nohup ./pipeSubDK.sh ${subID} ${split} ${rootPath} >& logfiles/${subID}_pipe.log &
+nohup ./pipeSubDK.sh ${subID} ${split} ${rootPath} ${emailAdress} >& logfiles/${subID}_pipe.log &
 #Get the PID of the previously submitted pipeline call...
 pipe_PID=$!
 

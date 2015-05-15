@@ -17,6 +17,7 @@
 subID=$1
 split=$2
 setupPath=$3
+emailAdress=$4
 
 #Init all Toolboxes
 source ${setupPath}/pipeSetup.sh
@@ -84,5 +85,5 @@ echo "aggregateSC job submitted"
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 
 ### 6). Convert the Files into a single (TVB compatible) ZIP File ##############
-sbatch -J conn2TVB_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_conn2TVB.o%j -t 00:10:00 -N 1 -n 1 -p normal ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
+sbatch -J conn2TVB_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_conn2TVB.o%j -t 00:10:00 -N 1 -n 1 -p normal ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
 echo "connectivity2TVB job submitted"
