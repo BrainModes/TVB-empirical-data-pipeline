@@ -24,7 +24,7 @@ region_table = [1001:1003,1005:1035,2001:2003,2005:2035];
 region_id_table=[];
 for regid = [1001:1003,1005:1035,2001:2003,2005:2035],
     tmpids=find(wmborder.img.img == regid);
-    region_id_table=[region_id_table; regid*ones(length(tmpids),1), tmpids];    
+    region_id_table=[region_id_table; regid*ones(length(tmpids),1), tmpids];
 end
 SC_cap(length(region_id_table)).e=[];
 SC_dist(length(region_table),length(region_table)).dist=[];
@@ -41,8 +41,8 @@ generated_tracks=0;
 
 % Loop over regions
 for region = roi,
-    
-    expected_tracks=expected_tracks+length(find(wmborder.img.img==region_table(region)))*200;    
+
+    expected_tracks=expected_tracks+length(find(wmborder.img.img==region_table(region)))*200;
     %tilefiles = dir([num2str(region_table(region)) '*.tck']);
     %More safe way (esp. when dealing with subcort Regions)
     d = dir([num2str(region_table(region)) '*.tck']);
@@ -53,13 +53,13 @@ for region = roi,
     files={d(~cellfun('isempty',i))};
     tilefiles = files{1};
     clear d i files
-    
+
     for tile = 1:length(tilefiles),
         if tilefiles(tile).bytes > 2000,
             clear tck tracks
-            tck = read_mrtrix_tracks(tilefiles(tile).name);
+            tracks = read_mrtrix_tracks(tilefiles(tile).name);
 
-            tracks = tck2voxel_cluster(tck,affine_matrix);
+            tracks = tck2voxel_cluster(tracks,affine_matrix);
             display([tilefiles(tile).name ': Tracks loaded.']);
             generated_tracks = generated_tracks + length(tracks.data);
 
@@ -71,7 +71,7 @@ for region = roi,
                 % track path belonging to the seed region as the actual seed voxel.
                 % Then we check whether the remaining path length is at least 10 mm
                 % long.
-                
+
                 %Generate Linear indices in the 256x256x256-Imagecube from
                 %all the voxels of the current track
                 pathinds=sub2ind(size(wmborder.img.img),tracks.data{1,trackind}(:,1),tracks.data{1,trackind}(:,2),tracks.data{1,trackind}(:,3));
@@ -80,13 +80,13 @@ for region = roi,
                 %Generate linear Indices from all the Regions that are not
                 %Zero-valued, EXCLUDING THE END-POINT!
                 inregids=find(pathids(1:end-1)~=0);
-                
+
                 if ~isempty(inregids), %Check if the Path has Points on the Border
                     tracklen=size(tracks.data{1,trackind},1)-inregids(end); %Measure the length from the Endpoint to the last Point that exits the starting Region
                     if tracklen > 40, %Check if the track has a minimum length (step-size is 0.2mm)
                         if pathids(end) ~= 0, %Check if the Path has a valid endpoint
                             if region_table(region) == pathids(inregids(end)), %Check if the Region-ID requested matches the Seedpoint-Region
-                                good_tracks=good_tracks+1; %"[...] when you have eliminated the impossible, whatever remains, however improbable, must be the truth" 
+                                good_tracks=good_tracks+1; %"[...] when you have eliminated the impossible, whatever remains, however improbable, must be the truth"
 
                                 seed_id=find(region_id_table(:,2) == pathinds(inregids(end)));
                                 target_id = find(region_id_table(:,2)==pathinds(end));
@@ -100,7 +100,7 @@ for region = roi,
 
                                 SC_dist(r1,r2).dist=[SC_dist(r1,r2).dist;tracklen]; %Add the distance of the current track to a pool of distances between the two ROIS
                                 SC_dist(r2,r1).dist=[SC_dist(r2,r1).dist;tracklen];
-                                
+
                                 % New distances computation
                                 SC_dist_new(seed_id).e=[SC_dist_new(seed_id).e;tracklen]; %Add a Connection from Seedvoxel to Targetvoxel
                                 SC_dist_new(target_id).e=[SC_dist_new(target_id).e;tracklen]; %Add a Connection from Targetvoxel to Seedvoxel
@@ -122,12 +122,13 @@ for region = roi,
 
             end
         end
+        clear tracks
     end
 end
 
 for i = 1:length(region_id_table),
-    [SC_cap(i).e, ia, ~]=unique(SC_cap(i).e); %Filter out the redundant connections i.e. just count distinct connections  
-    SC_dist_new(i).e=SC_dist_new(i).e(ia); %Only take the length of the distinct connections into account   
+    [SC_cap(i).e, ia, ~]=unique(SC_cap(i).e); %Filter out the redundant connections i.e. just count distinct connections
+    SC_dist_new(i).e=SC_dist_new(i).e(ia); %Only take the length of the distinct connections into account
 end
 
 time=toc;

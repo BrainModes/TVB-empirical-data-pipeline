@@ -31,7 +31,7 @@ echo "Wait for the Preprocessing-Job to finish"
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 
 ### 2.1) RUN functional Processing ##########################
-sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:45:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
+sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
 
 ### 2.2) RUN generateMask.m ##################################
 sbatch -J Mask_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_mask.o%j -N 1 -n 1 -p normal -t 01:00:00 ${rootPath}/genMaskDK.sh ${subFolder} ${subID} ${rootPath} > $jobFile
