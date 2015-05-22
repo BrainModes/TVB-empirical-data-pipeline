@@ -87,3 +87,5 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 ### 6). Convert the Files into a single (TVB compatible) ZIP File ##############
 sbatch -J conn2TVB_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_conn2TVB.o%j -t 00:10:00 -N 1 -n 1 -p normal ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
 echo "connectivity2TVB job submitted"
+
+##TODO: Merge step 5.) and 6.) to save core allocations!
