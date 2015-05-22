@@ -79,7 +79,7 @@ cd ${subFolder}/${subID}/mrtrix_68/masks_68
 touch ${subFolder}/${subID}/doneCompSC.txt
 cd ${subFolder}/${subID}/mrtrix_68/tracks_68
 
-sbatch -J aggreg_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 01:50:00 -N 1 -n 1 -p normal ./runOctave.sh "aggregateSC_clusterDK('${subID}_SC.mat','${subFolder}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')" > $jobFile
+sbatch -J aggreg_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 01:30:00 -N 1 -n 1 -p normal ./runOctave.sh "aggregateSC_clusterDK('${subID}_SC.mat','${subFolder}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')" > $jobFile
 echo "aggregateSC job submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
