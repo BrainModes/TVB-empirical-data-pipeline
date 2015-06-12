@@ -19,7 +19,7 @@ function generateMasksDK(subPath,pathOnCluster)
 %This script is meant to be run locally for now!
 %tic
 mask_output_folder=[subPath 'mrtrix_68/masks_68/'];
-mkdir([subPath 'mrtrix_68/'],'masks_68')
+%mkdir([subPath 'mrtrix_68/'],'masks_68')
 
 %Set the desired Number of Seedpoints per voxel
 seedsPerVoxel = 200;

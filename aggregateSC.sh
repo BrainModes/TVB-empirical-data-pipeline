@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #
 # This script performs the final steps of the pipeline:
 #   + Aggregate the SC matrix

@@ -37,7 +37,10 @@ echo $jobID >> $jobListFile
 ### 2.1) RUN functional Processing ##########################
 #Check if BOLD data is provided
 if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
-	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
+	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID} > $jobFile
+	#Extract the Job ID from the previously submitted job
+	jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+	echo $jobID >> $jobListFile
 fi
 
 ### 2.2) RUN generateMask.m ##################################
@@ -48,6 +51,9 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 echo $jobID >> $jobListFile
 
 ### 3.) RUN the Tracking ####################################
+mkdir -p ${subFolder}/${subID}/mrtrix_68
+mkdir -p ${subFolder}/${subID}/mrtrix_68/masks_68
+mkdir -p ${subFolder}/${subID}/mrtrix_68/tracks_68
 cp ${rootPath}/trackingClusterDK.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cp ${rootPath}/pipeSetup.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cp  ${rootPath}/runTracking.sh ${subFolder}/${subID}/mrtrix_68/masks_68
