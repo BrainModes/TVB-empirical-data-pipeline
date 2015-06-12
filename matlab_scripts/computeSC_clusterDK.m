@@ -17,7 +17,8 @@ function computeSC_clusterDK(wmborder_file,roi,outfile)
 
 tic
 display(['Computing SC for ROI ' num2str(roi) '.']);
-load('../masks_68/affine_matrix.mat')
+%load('../masks_68/affine_matrix.mat')
+load('/Users/srothmei/Desktop/charite/toronto/QL_20120814/mrtrix_68/masks_68/affine_matrix.mat')
 
 wmborder.img = load(wmborder_file);
 region_table = [1001:1003,1005:1035,2001:2003,2005:2035];
@@ -56,10 +57,10 @@ for region = roi,
     
     for tile = 1:length(tilefiles),
         if tilefiles(tile).bytes > 2000,
-            clear tck tracks
-            tck = read_mrtrix_tracks(tilefiles(tile).name);
+           
+            tracks = read_mrtrix_tracks(tilefiles(tile).name);
 
-            tracks = tck2voxel_cluster(tck,affine_matrix);
+            tracks = tck2voxel_cluster(tracks,affine_matrix);
             display([tilefiles(tile).name ': Tracks loaded.']);
             generated_tracks = generated_tracks + length(tracks.data);
 
@@ -123,6 +124,7 @@ for region = roi,
             end
         end
     end
+    clear tracks
 end
 
 for i = 1:length(region_id_table),

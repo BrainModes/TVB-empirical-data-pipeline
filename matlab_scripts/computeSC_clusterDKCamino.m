@@ -19,6 +19,13 @@ tic
 display(['Computing SC for ROI ' num2str(roi) '.']);
 load('../masks_68/affine_matrix.mat')
 
+%Set the threshold to filter out erroneus track i.e. only count connections
+%if they've been tracked at least X% considering the complete amount of
+%tracks generated from that voxel
+thresholdPercent = 1; %Number in Percent
+%Set the number of tracks/voxel
+tracksPerVoxel = 1000;
+
 wmborder.img = load(wmborder_file);
 region_table = [1001:1003,1005:1035,2001:2003,2005:2035];
 region_id_table=[];
@@ -27,6 +34,7 @@ for regid = [1001:1003,1005:1035,2001:2003,2005:2035],
     region_id_table=[region_id_table; regid*ones(length(tmpids),1), tmpids];
 end
 SC_cap(length(region_id_table)).e=[];
+SC_cap(end).dist = [];
 SC_dist(length(region_table),length(region_table)).dist=[];
 SC_dist_new(length(region_id_table)).e=[];
 
@@ -38,10 +46,15 @@ wrong_seed=0;
 expected_tracks=0;
 wrong_target=0;
 generated_tracks=0;
+tracksBelowThreshold = 0;
 
 % Loop over regions
+display('Start the main loop.')
+
+thresholdPercent = round(tracksPerVoxel*thresholdPercent/100);
+
 for region = roi,
-    
+
     expected_tracks=expected_tracks+length(find(wmborder.img.img==region_table(region)))*200;
     %tilefiles = dir([num2str(region_table(region)) '*.tck']);
     %More safe way (esp. when dealing with subcort Regions)
@@ -53,16 +66,16 @@ for region = roi,
     files={d(~cellfun('isempty',i))};
     tilefiles = files{1};
     clear d i files
-    
+
     for tile = 1:length(tilefiles),
         if tilefiles(tile).bytes > 2000,
             clear tck tracks
             tck = read_camino_trackfile(tilefiles(tile).name);
-            
+
             tracks = tck2voxel_cluster(tck,affine_matrix);
             display([tilefiles(tile).name ': Tracks loaded.']);
             generated_tracks = generated_tracks + length(tracks.data);
-            
+
             % Loop over tracks
             for trackind = 1:length(tracks.data),
                 % Find the "actual" seed-voxel: sometimes a track starts in a seed
@@ -71,14 +84,14 @@ for region = roi,
                 % track path belonging to the seed region as the actual seed voxel.
                 % Then we check whether the remaining path length is at least 10 mm
                 % long.
-                
+
                 %Generate Linear indices in the 256x256x256-Imagecube from
                 %all the voxels of the current track
                 pathinds=sub2ind(size(wmborder.img.img),tracks.data{1,trackind}(:,1),tracks.data{1,trackind}(:,2),tracks.data{1,trackind}(:,3));
                 %Fetch the corresponding Region-IDs from the WM-Border
                 pathids=wmborder.img.img(pathinds);
-                
-                
+
+
                 %CAMINO FIX
                 % It seems like sometimes Camino mixes the ordering of
                 % seed- and target-IDs. Since this fact, we now test if the
@@ -87,42 +100,45 @@ for region = roi,
                     pathinds = flipud(pathinds);
                     pathids = flipud(pathids);
                 end
-                
-                
+
+
                 %Generate linear Indices from all the Regions that are not
                 %Zero-valued, EXCLUDING THE END-POINT!
                 inregids=find(pathids(1:end-1)~=0);
-                
-                
+
+
                 if ~isempty(inregids), %Check if the Path has Points on the Border
                     tracklen=size(tracks.data{1,trackind},1)-inregids(end); %Measure the length from the Endpoint to the last Point that exits the starting Region
                     if tracklen > 40, %Check if the track has a minimum length (step-size is 0.2mm)
                         if pathids(end) ~= 0, %Check if the Path has a valid endpoint
                             if region_table(region) == pathids(inregids(end)), %Check if the Region-ID requested matches the Seedpoint-Region
                                 good_tracks=good_tracks+1; %"[...] when you have eliminated the impossible, whatever remains, however improbable, must be the truth"
-                                
+
                                 seed_id=find(region_id_table(:,2) == pathinds(inregids(end)));
                                 target_id = find(region_id_table(:,2)==pathinds(end));
-                                
+
                                 SC_cap(seed_id).e=[SC_cap(seed_id).e;target_id]; %Add a Connection from Seedvoxel to Targetvoxel
-                                SC_cap(target_id).e=[SC_cap(target_id).e;seed_id]; %Add a Connection from Targetvoxel to Seedvoxel
+                                %SC_cap(target_id).e=[SC_cap(target_id).e;seed_id]; %Add a Connection from Targetvoxel to Seedvoxel
+
+%                                 % Old distances computation
+%                                 r1=find(region_table==pathids(end)); %Transfer the Indexnr. from Desikan-Numbering (i.e. 1001-2035) to a Matrix-Numbering (i.e. 1-68)
+%                                 r2=find(region_table==pathids(inregids(end)));
+% 
+%                                 SC_dist(r1,r2).dist=[SC_dist(r1,r2).dist;tracklen]; %Add the distance of the current track to a pool of distances between the two ROIS
+%                                 SC_dist(r2,r1).dist=[SC_dist(r2,r1).dist;tracklen];
+% 
+%                                 % New distances computation
+%                                 SC_dist_new(seed_id).e=[SC_dist_new(seed_id).e;tracklen]; %Add a Connection from Seedvoxel to Targetvoxel
+%                                 SC_dist_new(target_id).e=[SC_dist_new(target_id).e;tracklen]; %Add a Connection from Targetvoxel to Seedvoxel
                                 
-                                % Old distances computation
-                                r1=find(region_table==pathids(end)); %Transfer the Indexnr. from Desikan-Numbering (i.e. 1001-2035) to a Matrix-Numbering (i.e. 1-68)
-                                r2=find(region_table==pathids(inregids(end)));
-                                
-                                SC_dist(r1,r2).dist=[SC_dist(r1,r2).dist;tracklen]; %Add the distance of the current track to a pool of distances between the two ROIS
-                                SC_dist(r2,r1).dist=[SC_dist(r2,r1).dist;tracklen];
-                                
-                                % New distances computation
-                                SC_dist_new(seed_id).e=[SC_dist_new(seed_id).e;tracklen]; %Add a Connection from Seedvoxel to Targetvoxel
-                                SC_dist_new(target_id).e=[SC_dist_new(target_id).e;tracklen]; %Add a Connection from Targetvoxel to Seedvoxel
-                                
+                                %NEWNEWNEW
+                                SC_cap(seed_id).dist = [SC_cap(seed_id).dist; tracklen];
+
                             else
                                 wrong_seed=wrong_seed+1;
                                 %display('Error. Region mismatch.');
                             end
-                            
+
                         else
                             wrong_target=wrong_target+1;
                         end
@@ -132,15 +148,66 @@ for region = roi,
                 else
                     off_seed=off_seed+1;
                 end
-                
+
             end
         end
+        clear tracks
     end
+
+    %Now loop over all voxels of the region and see if the number of accountet tracts
+    %is below threshold
+    display('Do threshold computations');
+    index = find(region_id_table(:,1) == region_table(roi));
+    for i = index'
+      if(~isempty(SC_cap(i).e))
+          targRegions = SC_cap(i).e;
+          targRegions = region_id_table(targRegions,1);
+          edges = unique(targRegions);
+          N = histc(targRegions,edges);
+          %Cross out everything below threshold
+          valuesToDelete = edges(N < thresholdPercent);
+          %Now filter for distinct tracts...
+          SC_cap(i).e = unique(SC_cap(i).e);
+
+          if(length(valuesToDelete) == length(edges)) %Check if the whole thing get's deleted and if so save some time....
+              tracksBelowThreshold = tracksBelowThreshold + length(SC_cap(i).e);
+              SC_cap(i).e = [];
+              SC_cap(i).dist = [];
+          else
+              for j = 1:length(valuesToDelete)
+                  [~,tmp,~] = intersect(SC_cap(i).e,find(region_id_table(:,1) == valuesToDelete(j)));
+                  tracksBelowThreshold = tracksBelowThreshold + length(tmp);
+                  SC_cap(i).e(tmp) = [];
+                  SC_cap(i).dist(tmp) = [];
+              end
+              for k = 1:size(SC_cap(i).e,1)
+                  SC_cap(SC_cap(i).e(k)).e = [SC_cap(SC_cap(i).e(k)).e; i]; %Add a Connection from Targetvoxel to Seedvoxel
+                  SC_cap(SC_cap(i).e(k)).dist = [SC_cap(SC_cap(i).e(k)).dist; SC_cap(i).dist(k)];
+              end
+          end
+      end
+    end
+    display('Rebuild distance matrix')
+    %Rebuild the SC_dist matrix in the former way to use aggregate_SC
+    inverse_hashtable = zeros(max(region_table),1);
+    inverse_hashtable(region_table') = 1:length(region_table);
+    for i = 1:size(SC_cap,2)
+       %First check if there are connections
+       if(~isempty(SC_cap(i).e))
+           targets = unique(region_id_table(SC_cap(i).e,1));
+           for k = targets'
+                targetRowCol = inverse_hashtable(k);
+                targetDistances = SC_cap(i).dist(region_id_table(SC_cap(i).e,1) == k);
+                SC_dist(roi,targetRowCol).dist = [SC_dist(roi,targetRowCol).dist; targetDistances];
+           end
+       end
+    end
+
 end
 
 for i = 1:length(region_id_table),
     [SC_cap(i).e, ia, ~]=unique(SC_cap(i).e); %Filter out the redundant connections i.e. just count distinct connections
-    SC_dist_new(i).e=SC_dist_new(i).e(ia); %Only take the length of the distinct connections into account
+    %SC_dist_new(i).e=SC_dist_new(i).e(ia); %Only take the length of the distinct connections into account
 end
 
 time=toc;
@@ -149,7 +216,7 @@ time=toc;
 save(outfile,'-mat7-binary','SC_cap', 'SC_dist', 'SC_dist_new', 'off_seed', 'too_short', 'good_tracks', 'wrong_seed', 'expected_tracks', 'wrong_target', 'generated_tracks','time')
 
 %Increase the counter by creating an empty File
-fclose(fopen(['../masks_68/counter/' num2str(roi) '.txt'], 'w'));
+%fclose(fopen(['../masks_68/counter/' num2str(roi) '.txt'], 'w'));
 
 
 end
@@ -170,28 +237,28 @@ synthData=fread(fid,'float');
 fclose(fid);
 
 while(1)
-    
+
     try
         %Get track length
         trackLength = synthData(index);
     catch
         break;
     end
-    
+
     %Second point in the array is alway the index of the seedpoint inside
     %the current track
     %seedPoint = synthData(index + 1);
-    
+
     %Now extract the actual track
     %Ordering in the array is: x1-y1-z1-x2-y2-z2-...
     xyz = [synthData(index+2:3:trackLength*3 + index-1) synthData(index+3:3:trackLength*3+1 + index-1) synthData(index+4:3:trackLength*3+2 + index-1)];
-    
+
     %Increase the index
     index = index + trackLength*3 + 2;
-    
+
     %Save into struct
     tracks.data{end+1} = xyz;
-    
+
 end
 
 end
