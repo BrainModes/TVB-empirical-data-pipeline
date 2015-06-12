@@ -26,7 +26,7 @@ source ./pipeSetup.sh
 ######### Define Einvornment Variables ###############
 path=$1
 pfx=$2
-pfx2=$3
+#pfx2=$3
 
 cd ${path}/${pfx}
 
@@ -44,9 +44,9 @@ echo "START recon-all" >> $time_file
 date >> $time_file
 
 #Get the Name of the First file in the Dicom-Folder
-firstFile=$(ls ${path}/${pfx}/RAWDATA/MPRAGE/${pfx2}/ | sort -n | head -1)
+firstFile=$(ls ${path}/${pfx}/RAWDATA/MPRAGE/ | sort -n | head -1)
 
-recon-all -i ${path}/${pfx}/RAWDATA/MPRAGE/${pfx2}/${firstFile} -subjid recon_all -sd ${path}/${pfx} -openmp 16 -all
+recon-all -i ${path}/${pfx}/RAWDATA/MPRAGE/${firstFile} -subjid recon_all -sd ${path}/${pfx} -openmp 16 -all
 mri_convert --in_type mgz --out_type nii --out_orientation RAS ${path}/${pfx}/recon_all/mri/aparc+aseg.mgz ${path}/${pfx}/recon_all/mri/aparc+aseg.nii
 
 fi
@@ -62,15 +62,15 @@ echo "START dt_recon" >> $time_file
 date >> $time_file
 
 #Extract the diffusion vectors and the pulse intensity (bvec & bval)
-mrinfo RAWDATA/DTI/${pfx2}/ -grad btable.b
+mrinfo RAWDATA/DTI/ -grad btable.b
 cut -f 1,2,3 btable.b > bvec
 cut -f 4 btable.b > bval
 mkdir dt_recon
 
 #Get the Name of the First file in the Dicom-Folder
-firstFile=$(ls ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ | sort -n | head -1)
+firstFile=$(ls ${path}/${pfx}/RAWDATA/DTI/ | sort -n | head -1)
 
-dt_recon --i ${path}/${pfx}/RAWDATA/DTI/${pfx2}/${firstFile} --b bval bvec --sd ${path}/${pfx} --s recon_all --o ${path}/${pfx}/dt_recon
+dt_recon --i ${path}/${pfx}/RAWDATA/DTI/${firstFile} --b bval bvec --sd ${path}/${pfx} --s recon_all --o ${path}/${pfx}/dt_recon
 
 fi
 
@@ -156,9 +156,9 @@ mrconvert ${path}/${pfx}/calc_images/wmmask_1mm_68.nii.gz wmmask_1mm.mif
 mkdir -p tracks_68
 
 #Convert RAWDATA to MRTrix Format
-mrconvert ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ dwi.mif
+mrconvert ${path}/${pfx}/RAWDATA/DTI/dwi.mif
 #Export the btable in MRTrix Format
-mrinfo ${path}/${pfx}/RAWDATA/DTI/${pfx2}/ -grad btable.b
+mrinfo ${path}/${pfx}/RAWDATA/DTI/ -grad btable.b
 
 #Diffusion tensor images
 dwi2tensor dwi.mif -grad btable.b dt.mif

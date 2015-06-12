@@ -51,12 +51,12 @@ SUBJECTS_DIR=${path}/${pfx}
 
 #cd ..
 #Convert the raw DICOM Files to a single 4D-Nifti File (BOLD)
-mri_convert -i RAWDATA/BOLD-EPI/*/IM-0001-0001.dcm --out_type nii -o ${folderName}/bold.nii.gz
+mri_convert -i RAWDATA/BOLD-EPI/IM-0001-0001.dcm --out_type nii -o ${folderName}/bold.nii.gz
 #Convert the raw DICOM files to a single 3D-Nifti-File (T2)
 #mri_convert -i RAWDATA/T2w_2D/*/IM-0001-0001.dcm --out_type nii -o ${folderName}/T2.nii.gz
 
 #Get the number of DICOMs in the RAWDATA-folder
-numVol=$(ls -1 RAWDATA/BOLD-EPI/*/* | wc -l)
+numVol=$(ls -1 RAWDATA/BOLD-EPI/* | wc -l)
 
 cd $folderName
 

@@ -15,9 +15,9 @@
 # =============================================================================
 
 subID=$1
-split=$2
-setupPath=$3
-emailAdress=$4
+#split=$2
+setupPath=$2
+emailAdress=$3
 
 #Init all Toolboxes
 source ${setupPath}/pipeSetup.sh
@@ -28,7 +28,7 @@ jobFile=${rootPath}/logfiles/jobFile${subID}.txt
 jobListFile=${rootPath}/logfiles/jobList${subID}.txt
 
 ### 1.) The Preprocessinge-Job ####################################
-sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o logfiles/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} ${split} > $jobFile
+sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o logfiles/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} > $jobFile
 echo "Wait for the Preprocessing-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")

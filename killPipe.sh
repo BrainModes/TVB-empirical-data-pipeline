@@ -14,12 +14,19 @@
 # license can be found at http://www.gnu.org/copyleft/gpl.html.
 # =============================================================================
 
-#This script is intended to kill the pipeline after a certain amount of time to ensure that we dont encounter infinite loops due to some unforeseen reasons...
-pipe_PID=$1
+#If the user decides to abort the pipeline run, this script kills all the slurm jobs for the job-chain of this specific run
 
-echo "The PID is: ${pipe_PID}"
+#Init all Toolboxes
+source ${setupPath}/pipeSetup.sh
 
-#Wait a sufficent amount of time to enable the pipeline to finish..
-sleep 48h
-#Kill the process...
-kill $pipe_PID
+subID=$1
+
+jobListFile=${rootPath}/logfiles/jobList${subID}.txt
+
+while read jobID
+do
+
+      scancel $jobID
+      sleep 0.2
+
+done < $jobListFile
