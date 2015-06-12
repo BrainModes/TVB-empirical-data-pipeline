@@ -32,8 +32,20 @@ subFolder=$2
 #Now convert the results into tvb format
 ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
 
+#Gather all the results in a single folder
+resultFolder=${subFolder}/${subID}/results
+#SC Matrices
+cp ${subFolder}/${subID}/mrtrix_68/tracks_68/${subID}_SC.mat ${resultFolder}/${subID}_SC.mat
+#FC matrices
+if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
+  cp ${subFolder}/${subID}/bold/${subID}_fMRI_new.mat ${resultFolder}/${subID}_fMRI_new.mat
+fi
+
 #Clean the results
 rm ${subFolder}/${subID}/mrtrix_68/*.tck
+
+#Remove the RAWDATA since the user has it anyway because he uploaded it...
+rm -R ${subFolder}/${subID}/RAWDATA
 
 #Tie up the download package...
 tar -zcvf ${subFolder}/${subID}_downloadData.tar.gz ${subFolder}/${subID}/ && rm -R ${subFolder}/${subID}/

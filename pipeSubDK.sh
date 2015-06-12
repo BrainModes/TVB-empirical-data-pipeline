@@ -35,7 +35,10 @@ jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 echo $jobID >> $jobListFile
 
 ### 2.1) RUN functional Processing ##########################
-sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
+#Check if BOLD data is provided
+if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
+	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
+fi
 
 ### 2.2) RUN generateMask.m ##################################
 sbatch -J Mask_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_mask.o%j -N 1 -n 1 -p normal -t 01:00:00 ${rootPath}/genMaskDK.sh ${subFolder} ${subID} ${rootPath} > $jobFile

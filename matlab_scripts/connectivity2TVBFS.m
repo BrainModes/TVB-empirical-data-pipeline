@@ -55,8 +55,8 @@ function connectivity2TVBFS(subID,subFolder,SC_matrix,reconallFolder)
 files = cell(7,1);
 
 cd(subFolder);
-mkdir('TVB')
-cd TVB
+mkdir('results')
+cd results
 
 %Load the SC Matrices
 SC = load([subFolder '/mrtrix_68/tracks_68/' SC_matrix]);
@@ -188,16 +188,16 @@ end
 end
 
 function vertexNormals = calcNormals(cortexMesh)
-%Taken and modified from: 
+%Taken and modified from:
 % This software is part of the Brainstorm software:
 % http://neuroimage.usc.edu/brainstorm
-% 
+%
 % Copyright (c)2000-2014 University of Southern California & McGill University
 figure('Visible','off');
 hPatch = patch('Faces', cortexMesh.Faces, 'Vertices', cortexMesh.Vertices);
 
 % Get patch vertices
-vertexNormals = double(get(hPatch,'VertexNormals')); 
+vertexNormals = double(get(hPatch,'VertexNormals'));
 close all
 
 % Normalize normal vectors
@@ -257,20 +257,20 @@ vertices(FBtri,:) = [];
 normals(FBtri,:) = [];
 
 for i = 1:length(FBtri)
-    
+
     %Get the Rows of the Faces-Matrix including the target-vertex
     [targetRow,~] = find(faces == FBtri(i));
-    
+
     faces(targetRow,:) = [];
-    
+
     faces(faces > FBtri(i)) = faces(faces > FBtri(i)) - 1;
-    
+
     %Remove Vertices from Labeling
     labels(FBtri(i)) = [];
     labels(labels > FBtri(i)) = labels(labels > FBtri(i)) - 1;
-    
+
     FBtri = FBtri - 1;
-    
+
 end
 
 
@@ -383,18 +383,18 @@ if(isempty(bool)) %means no colortable
 end
 
 if(bool)
-    
+
     %Read colortable
     numEntries = fread(fp, 1, 'int');
-    
+
     if(numEntries > 0)
-        
+
         if verbosity, disp('Reading from Original Version'); end;
         colortable.numEntries = numEntries;
         len = fread(fp, 1, 'int');
         colortable.orig_tab = fread(fp, len, '*char')';
         colortable.orig_tab = colortable.orig_tab(1:end-1);
-        
+
         colortable.struct_names = cell(numEntries,1);
         colortable.table = zeros(numEntries,5);
         for i = 1:numEntries
@@ -424,10 +424,10 @@ if(bool)
         len = fread(fp, 1, 'int');
         colortable.orig_tab = fread(fp, len, '*char')';
         colortable.orig_tab = colortable.orig_tab(1:end-1);
-        
+
         colortable.struct_names = cell(numEntries,1);
         colortable.table = zeros(numEntries,5);
-        
+
         numEntriesToRead = fread(fp, 1, 'int');
         for i = 1:numEntriesToRead
             structure = fread(fp, 1, 'int')+1;
