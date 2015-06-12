@@ -24,12 +24,15 @@ source ${setupPath}/pipeSetup.sh
 
 #Define the jobFile
 jobFile=${rootPath}/logfiles/jobFile${subID}.txt
+#Define the joblist which is used to kill all jobs for the current run if the user wants to abort the pipeline
+jobListFile=${rootPath}/logfiles/jobList${subID}.txt
 
 ### 1.) The Preprocessinge-Job ####################################
 sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o logfiles/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} ${split} > $jobFile
 echo "Wait for the Preprocessing-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+echo $jobID >> $jobListFile
 
 ### 2.1) RUN functional Processing ##########################
 sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID}
@@ -39,6 +42,7 @@ sbatch -J Mask_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_mask.
 echo "Wait fo the Mask-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+echo $jobID >> $jobListFile
 
 ### 3.) RUN the Tracking ####################################
 cp ${rootPath}/trackingClusterDK.sh ${subFolder}/${subID}/mrtrix_68/masks_68
@@ -51,6 +55,7 @@ sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o ${rootP
 echo "Tracking jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+echo $jobID >> $jobListFile
 
 ### 4.) RUN computeSC_cluster_new.m #########################
 cp ${rootPath}/matlab_scripts/*.m ${subFolder}/${subID}/mrtrix_68/tracks_68
@@ -73,19 +78,22 @@ sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${s
 echo "computeSC jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+echo $jobID >> $jobListFile
 
 ### 5). RUN aggregateSC_new.m ################################
 cd ${subFolder}/${subID}/mrtrix_68/masks_68
 touch ${subFolder}/${subID}/doneCompSC.txt
 cd ${subFolder}/${subID}/mrtrix_68/tracks_68
 
-sbatch -J aggreg_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 01:30:00 -N 1 -n 1 -p normal ./runOctave.sh "aggregateSC_clusterDK('${subID}_SC.mat','${subFolder}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}')" > $jobFile
+sbatch -J aggreg_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 01:30:00 -N 1 -n 1 -p normal ./runOctave.sh "aggregateSC_clusterDK('${subID}_SC.mat','${subFolder}/${subID}/mrtrix_68/masks_68/wmborder.mat','${subID}'); connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')" > $jobFile
 echo "aggregateSC job submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+echo $jobID >> $jobListFile
 
 ### 6). Convert the Files into a single (TVB compatible) ZIP File ##############
-sbatch -J conn2TVB_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_conn2TVB.o%j -t 00:10:00 -N 1 -n 1 -p normal ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
-echo "connectivity2TVB job submitted"
-
-##TODO: Merge step 5.) and 6.) to save core allocations!
+#sbatch -J conn2TVB_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_conn2TVB.o%j -t 00:10:00 -N 1 -n 1 -p normal ./runOctave.sh "connectivity2TVBFS('${subID}','${subFolder}/${subID}','${subID}_SC.mat','recon_all')"
+#echo "connectivity2TVB job submitted"
+#Extract the Job ID from the previously submitted job
+#jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+#echo $jobID >> $jobListFile
