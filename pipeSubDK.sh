@@ -93,6 +93,7 @@ echo $jobID >> $jobListFile
 cd ${subFolder}/${subID}/mrtrix_68/masks_68
 touch ${subFolder}/${subID}/doneCompSC.txt
 cd ${subFolder}/${subID}/mrtrix_68/tracks_68
+cp ${rootPath}/aggregateSC.sh ${subFolder}/${subID}/mrtrix_68/tracks_68
 
 sbatch -J aggreg_${subID} --dependency=afterok:${jobID} --mail-user=${emailAdress} --mail-type=end -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 02:00:00 -N 1 -n 1 -p normal ./aggregateSC.sh $subID $subFolder > $jobFile
 echo "aggregateSC job submitted"
