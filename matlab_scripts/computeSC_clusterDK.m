@@ -135,8 +135,6 @@ time=toc;
 
 save(outfile,'SC_cap', 'SC_dist', 'SC_dist_new', 'off_seed', 'too_short', 'good_tracks', 'wrong_seed', 'expected_tracks', 'wrong_target', 'generated_tracks','time')
 
-%Increase the counter by creating an empty File
-fclose(fopen(['../masks_68/counter/' num2str(roi) '.txt'], 'w'));
 
 
 end

@@ -59,7 +59,6 @@ cp ${rootPath}/pipeSetup.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cp  ${rootPath}/runTracking.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cd ${subFolder}/${subID}/mrtrix_68/masks_68
 chmod +x *.sh
-mkdir counter
 sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o ${rootPath}/logfiles/${subID}_tracking.o%j -t 03:30:00 ./runTracking.sh > $jobFile
 echo "Tracking jobs submitted"
 #Extract the Job ID from the previously submitted job

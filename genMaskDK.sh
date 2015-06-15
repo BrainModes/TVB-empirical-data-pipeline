@@ -20,7 +20,7 @@ path=$1
 pfx=$2
 rootPath=$3
 
-cd ${path}/matlab_scripts
+cd ${rootPath}/matlab_scripts
 module load octave
 octave --eval "addpath(genpath('${rootPath}/niak')); generateMasksDK('${path}/${pfx}/','${path}/${pfx}/')"
 module unload octave
