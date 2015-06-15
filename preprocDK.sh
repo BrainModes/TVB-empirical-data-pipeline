@@ -156,7 +156,7 @@ mrconvert ${path}/${pfx}/calc_images/wmmask_1mm_68.nii.gz wmmask_1mm.mif
 mkdir -p tracks_68
 
 #Convert RAWDATA to MRTrix Format
-mrconvert ${path}/${pfx}/RAWDATA/DTI/dwi.mif
+mrconvert ${path}/${pfx}/RAWDATA/DTI/ dwi.mif
 #Export the btable in MRTrix Format
 mrinfo ${path}/${pfx}/RAWDATA/DTI/ -grad btable.b
 
