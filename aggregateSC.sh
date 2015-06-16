@@ -42,10 +42,11 @@ if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
 fi
 
 #Clean the results
-rm ${subFolder}/${subID}/mrtrix_68/*.tck
+rm ${subFolder}/${subID}/mrtrix_68/tracks_68/*.tck
 
 #Remove the RAWDATA since the user has it anyway because he uploaded it...
 rm -R ${subFolder}/${subID}/RAWDATA
 
 #Tie up the download package...
-tar -zcvf ${subFolder}/${subID}_downloadData.tar.gz ${subFolder}/${subID}/ && rm -R ${subFolder}/${subID}/
+cd ${subFolder}
+tar -zcvf ${subID}_downloadData.tar.gz ${subID}/ && rm -R ${subID}/
