@@ -22,13 +22,18 @@ setupPath=$2
 #Init all Toolboxes
 source ${setupPath}/pipeSetup.sh
 
+#Define the folder for the logfiles
+logFolder=${subFolder}/${subID}/logfiles
+#create the folder
+mkdir $logFolder
+
 #Define the jobFile
-jobFile=${rootPath}/logfiles/jobFile${subID}.txt
+jobFile=${logFolder}/jobFile${subID}.txt
 #Define the joblist which is used to kill all jobs for the current run if the user wants to abort the pipeline
-jobListFile=${rootPath}/logfiles/jobList${subID}.txt
+jobListFile=${logFolder}/jobList${subID}.txt
 
 ### 1.) The Preprocessinge-Job ####################################
-sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o logfiles/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} > $jobFile
+sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o ${logFolder}/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} > $jobFile
 echo "Wait for the Preprocessing-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
@@ -37,14 +42,14 @@ echo $jobID >> $jobListFile
 ### 2.1) RUN functional Processing ##########################
 #Check if BOLD data is provided
 if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
-	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID} > $jobFile
+	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o ${logFolder}/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID} > $jobFile
 	#Extract the Job ID from the previously submitted job
 	jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
 	echo $jobID >> $jobListFile
 fi
 
 ### 2.2) RUN generateMask.m ##################################
-sbatch -J Mask_${subID} --dependency=afterok:${jobID} -o logfiles/${subID}_mask.o%j -N 1 -n 1 -p normal -t 01:00:00 ${rootPath}/genMaskDK.sh ${subFolder} ${subID} ${rootPath} > $jobFile
+sbatch -J Mask_${subID} --dependency=afterok:${jobID} -o ${logFolder}/${subID}_mask.o%j -N 1 -n 1 -p normal -t 01:00:00 ${rootPath}/genMaskDK.sh ${subFolder} ${subID} ${rootPath} > $jobFile
 echo "Wait fo the Mask-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
@@ -59,7 +64,7 @@ cp ${rootPath}/pipeSetup.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cp  ${rootPath}/runTracking.sh ${subFolder}/${subID}/mrtrix_68/masks_68
 cd ${subFolder}/${subID}/mrtrix_68/masks_68
 chmod +x *.sh
-sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o ${rootPath}/logfiles/${subID}_tracking.o%j -t 03:30:00 ./runTracking.sh > $jobFile
+sbatch -J trk_${subID} --dependency=afterok:${jobID} -n 192 -p normal -o ${logFolder}/${subID}_tracking.o%j -t 03:30:00 ./runTracking.sh > $jobFile
 echo "Tracking jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
@@ -82,7 +87,7 @@ if [ ! -f "compSCcommand.txt" ]; then
 fi
 
 #Now submit the job....
-sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_compSC.o%j -n 68 -p normal -t 03:30:00 ./runCompSC.sh > $jobFile
+sbatch -J cSC_${subID} --dependency=afterok:${jobID} -o ${logFolder}/${subID}_compSC.o%j -n 68 -p normal -t 03:30:00 ./runCompSC.sh > $jobFile
 echo "computeSC jobs submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
@@ -94,7 +99,7 @@ touch ${subFolder}/${subID}/doneCompSC.txt
 cd ${subFolder}/${subID}/mrtrix_68/tracks_68
 cp ${rootPath}/aggregateSC.sh ${subFolder}/${subID}/mrtrix_68/tracks_68
 
-sbatch -J aggreg_${subID} --dependency=afterok:${jobID} -o ${rootPath}/logfiles/${subID}_aggregateSC.o%j -t 02:00:00 -N 1 -n 1 -p normal ./aggregateSC.sh $subID $subFolder > $jobFile
+sbatch -J aggreg_${subID} --dependency=afterok:${jobID} -o ${logFolder}/${subID}_aggregateSC.o%j -t 02:00:00 -N 1 -n 1 -p normal ./aggregateSC.sh $subID $subFolder > $jobFile
 echo "aggregateSC job submitted"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
