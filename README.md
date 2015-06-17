@@ -55,7 +55,7 @@ To abort the whole pipeline, simply execute the script <b>killPipe.sh</b> from w
 The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 24h per subject.
 </li>
 <li><b>Check the results:</b><br>
-The resulting SC/FC matrices are placed in the results folder:
+The resulting SC/FC matrices are placed in the results folder:<br>
 <img src="doc/results.png" /><br>
 Besides the SC and FC matrices in MATLAB/Octave .mat-format, the pipeline also generated a .zip-file containing a ready-to-import TVB connectivity-dataset for the subject.
 </li>
