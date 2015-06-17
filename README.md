@@ -8,8 +8,8 @@ Charité University Medicine Berlin & Max Planck Institute Leipzig, Germany<br>
 Correspondence: petra.ritter@charite.de<br>
 <br>
 When using this code please cite as follows:<br>
-Schirner M, Rothmeier S, Jirsa V, McIntosh AR, Ritter P (in prep)<br>
-Constructing subject-specific Virtual Brains from multimodal neuroimaging<br>
+Schirner, M., Rothmeier, S., Jirsa, V. K., McIntosh, A. R., & Ritter, P. (2015). <br>
+An automated pipeline for constructing personalized virtual brains from multimodal neuroimaging data. NeuroImage.<br>
 Used software packages:
 =============================================================================
 <ul>
@@ -21,11 +21,15 @@ Used software packages:
 </ul>
 How to use the pipeline:
 =============================================================================
-<br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the OAR job scheduler. Hence all commands 
-in the scripts fore submitting computational jobs must be replaced when using a different scheduling system!</br>
+<br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the SLURM job scheduler. Hence all commands
+in the scripts for submitting computational jobs must be replaced when using a different scheduling system!</br>
 Also the required software packages (FREESURFER, FSL and MRTrix) have to be installed or the executables have to be placed inside a folder accessable for the executing user.<br>
 GNU Octave has to be installed system-wide and executable for the job scheduler.
 <ol>
+<li><b>Setup:</b></li>
+After extracting the files on your machine (e.g. after donwloading&unpacking or cloning the repository directly from Github), you first need to adapt some parameters to your local paths.<br>
+All these settings are located within the <b>pipeSetup.sh</b> script. Open it using your favorite command line editor like nano or vim:
+<img src="doc/setup.png"/><br>
 <li><b>Data structure:</b><br>
 <img src="doc/initTree.png"/><br>
 First, make sure that the data structure inside your subject folder looks exactly like displayed in the picture above.
@@ -45,8 +49,8 @@ After this is done, open the script <b style="color:red;">pipeSetup.sh</b> and e
 <li><b>Process a specific subject:</b><br>
 To tun the pipeline using the dataset for a specific subject, simply execute the following:
 <p style="border:1px dashed #cccccc;">./runPipeline.sh -s JohnDoe -a J_D</p>
-The pipeline will now run fully automated as a background process. A .log-file is placed in the folder. Using this file it is possible to monitor how far the 
-execution of the pipeline has already progressed. Furthermore the process ID (PID) is displayed in this file which can be used to kill 
+The pipeline will now run fully automated as a background process. A .log-file is placed in the folder. Using this file it is possible to monitor how far the
+execution of the pipeline has already progressed. Furthermore the process ID (PID) is displayed in this file which can be used to kill
 the background process in case something went wrong.<br>
 The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 16h per subject.
 </li>
