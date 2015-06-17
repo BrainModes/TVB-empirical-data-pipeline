@@ -52,12 +52,11 @@ Log-files for the different steps are placed within the subject-folder. Using th
 execution of the pipeline has already progressed.<br>
 To abort the whole pipeline, simply execute the script <b>killPipe.sh</b> from within the logfiles-folder. This script will send the scancel-command to all jobs belonging to the subjects pipeline run.<br>
 <img src="doc/killPipe.png" /><br>
-The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 16h per subject.
+The approximated runtime for the pipeline (depending on how much cores are available at launch time) is around 24h per subject.
 </li>
 <li><b>Check the results:</b><br>
-The resulting SC matrices are placed in the folder:
-<p style="border:1px dashed #cccccc;">/home/yourUserName/pipeline/JohnDoe/mrtrix_68/tracks_68/JD_SC.mat</p>
-The FC matrix is placed in the folder
-<p style="border:1px dashed #cccccc;">/home/yourUserName/pipeline/JohnDoe/bold/JD_fMRI_new.mat</p>
+The resulting SC/FC matrices are placed in the results folder:
+<img src="doc/results.png" /><br>
+Besides the SC and FC matrices in MATLAB/Octave .mat-format, the pipeline also generated a .zip-file containing a ready-to-import TVB connectivity-dataset for the subject.
 </li>
 </ol>
