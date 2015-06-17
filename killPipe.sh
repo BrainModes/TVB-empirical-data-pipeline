@@ -15,18 +15,11 @@
 # =============================================================================
 
 #If the user decides to abort the pipeline run, this script kills all the slurm jobs for the job-chain of this specific run
-
-#Init all Toolboxes
-source ${setupPath}/pipeSetup.sh
-
-subID=$1
-
-jobListFile=${rootPath}/logfiles/jobList${subID}.txt
-
 while read jobID
 do
 
+      echo "Killing Job ${jobID}"
       scancel $jobID
       sleep 0.2
 
-done < $jobListFile
+done < ./jobList*.txt
