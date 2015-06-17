@@ -28,7 +28,7 @@ GNU Octave has to be installed system-wide and executable for the job scheduler.
 <ol>
 <li><b>Setup:</b></li>
 After extracting the files on your machine (e.g. after donwloading&unpacking or cloning the repository directly from Github), you first need to adapt some parameters to your local paths.<br>
-All these settings are located within the <b>pipeSetup.sh</b> script. Open it using your favorite command line editor like nano or vim:
+All these settings are located within the <b>pipeSetup.sh</b> script. Open it using your favorite command line editor like nano or vim:<br>
 <img src="doc/setup.png"/><br>
 Note that in the picture above, FREESURFER is also installed on the HPC as a module and can thus be simply loaded as a module instead of setting it up manually.<br>
 
@@ -57,6 +57,9 @@ The approximated runtime for the pipeline (depending on how much cores are avail
 <li><b>Check the results:</b><br>
 The resulting SC/FC matrices are placed in the results folder:<br>
 <img src="doc/results.png" /><br>
-Besides the SC and FC matrices in MATLAB/Octave .mat-format, the pipeline also generated a .zip-file containing a ready-to-import TVB connectivity-dataset for the subject.
+Besides the SC and FC matrices in MATLAB/Octave .mat-format, the pipeline also generated a .zip-file containing a ready-to-import TVB connectivity-dataset for the subject.<br>
+<br>
+The NSG branch of the pipeline also finalizes the subject-folder by removing the sizeable track-files of MRTrix (.tck) and compressing the folder into a single .tar.gz-file<br>
+The tar-archive will be of a size less than 2GB per subject.
 </li>
 </ol>
