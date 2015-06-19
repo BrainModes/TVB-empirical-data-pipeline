@@ -19,15 +19,16 @@ Used software packages:
 <li>GNU Octave (http://www.gnu.org/software/octave/)</li>
 <li>NIAK (Neuroimaging Analysis Kit; MATLAB toolbox) (https://www.nitrc.org/projects/niak/)</li>
 </ul>
+=============================================================================
+<h2>WARNING:</h2>
+The diffusion processing in MRTrix currently only features the handling of <b>single shell</b> dwMRI data, i.e. recordings using the same b-value (this currently hold for the versions 0.2 as used by us and also version 3 of MRTrix).<br>
+If you intend to process multi-shell dwMRI data, please take a look at the camino-branch of this pipeline (work in progress).
 How to use the pipeline:
 =============================================================================
 <br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the SLURM job scheduler. Hence all commands
 in the scripts for submitting computational jobs must be replaced when using a different scheduling system!</br>
 Also the required software packages (FREESURFER, FSL and MRTrix) have to be installed or the executables have to be placed inside a folder accessable for the executing user.<br>
 GNU Octave has to be installed system-wide and executable for the job scheduler.
-|<h2>WARNING:</h2>|
-| ------------- |
-| The diffusion processing in MRTrix currently only features the handling of <b>single shell</b> dwMRI data, i.e. recordings using the same b-value|
 <ol>
 <li><b>Setup:</b></li>
 After extracting the files on your machine (e.g. after donwloading&unpacking or cloning the repository directly from Github), you first need to adapt some parameters to your local paths.<br>
