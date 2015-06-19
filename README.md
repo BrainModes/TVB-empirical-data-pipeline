@@ -22,7 +22,7 @@ Used software packages:
 =============================================================================
 <h2>WARNING:</h2>
 The diffusion processing in MRTrix currently only features the handling of <b>single shell</b> dwMRI data, i.e. recordings using the same b-value (this currently hold for the versions 0.2 as used by us and also version 3 of MRTrix).<br>
-If you intend to process multi-shell dwMRI data, please take a look at the camino-branch of this pipeline (work in progress).
+If you intend to process multi-shell dwMRI data, please take a look at the multi-shell-branch of this pipeline which uses Camino (http://cmic.cs.ucl.ac.uk/camino/) to perform fiber tracking (work in progress).
 How to use the pipeline:
 =============================================================================
 <br>IMPORTANT: The pipeline is designed to work on a high performance cluster using the SLURM job scheduler. Hence all commands
