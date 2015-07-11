@@ -46,11 +46,11 @@ statFile = statFile(1).name;
 ROI_ID_table = dlmread([path '/' statFile]);
 
 %Clear the ROI-Table and leave only Desikan-Entries
-%start1=size(ROI_ID_table,1)-68;
-%stop1=start1+34-1;
-%start2=stop1+2;
-%stop2=size(ROI_ID_table,1);
-%fMRI = fMRI(:,[start1:stop1 start2:stop2]);
+start1=size(ROI_ID_table,1)-68;
+stop1=start1+34-1;
+start2=stop1+2;
+stop2=size(ROI_ID_table,1);
+fMRI_DK68 = fMRI(:,[start1:stop1 start2:stop2]);
 
 %Compute FC
 FC_cc=corr(fMRI);
@@ -59,11 +59,18 @@ FC_mi=FastPairMI(zscore(fMRI)',0.3);
 %Fix for possible NaN values
 FC_cc(isnan(FC_cc)) = 0;
 
+%Cross out DK68
+FC_cc_DK68 = FC_cc([start1:stop1 start2:stop2],[start1:stop1 start2:stop2]);
+
+%Store timeseries
 v = genvarname([subName '_ROIts']);
 eval([v '= fMRI;']);
 
+v = genvarname([subName '_ROIts_DK68']);
+eval([v '= fMRI_DK68;']);
+
 %save([path '/' subName '_fMRI_new.mat'],[subName '_ROIts'],'FC_cc','FC_mi','ROI_ID_table');
-save([path '/' subName '_fMRI_new.mat'],'-mat7-binary',[subName '_ROIts'],'FC_cc','FC_mi','ROI_ID_table');
+save([path '/' subName '_fMRI_new.mat'],'-mat7-binary',[subName '_ROIts'],[subName '_ROIts_DK68'],'FC_cc_DK68','FC_cc','FC_mi','ROI_ID_table');
 
 end
 
