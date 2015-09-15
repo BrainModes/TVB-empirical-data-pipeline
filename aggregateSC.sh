@@ -47,6 +47,10 @@ rm ${subFolder}/${subID}/mrtrix_68/tracks_68/*.tck
 #Remove the RAWDATA since the user has it anyway because he uploaded it...
 rm -R ${subFolder}/${subID}/RAWDATA
 
+#Remove some residual mrtrix-data, just in case there where some minor errors which might lead to a huge bloat of the folder size by not deleting
+#tmp-files correctly...
+rm -f ${subFolder}/${subID}/mrtrix_68/masks_68/mrtrix-*.nii
+
 #Tie up the download package...
 cd ${subFolder}
 tar -zcvf ${subID}_downloadData.tar.gz ${subID}/ && rm -R ${subID}/
