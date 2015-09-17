@@ -22,6 +22,9 @@ export rootPath=/home1/03510/srothmei/tvbPipe
 #Set the path to the folder holding the subject files
 export subFolder=/work/03510/srothmei/subjects
 
+#Define the folder for the logfiles
+export logFolder=${subFolder}/${subID}/logfiles
+
 #Set Paths FREESUFER
 #FREESURFER_HOME=/home/petra/freesurfer/freesurfer
 module load freesurfer

@@ -143,6 +143,44 @@ fslmaths wmmask_1mm_68.nii -add $wm_outline -bin wmmask_1mm_68.nii.gz
 echo "START MRTrix Preproc" >> $time_file
 date >> $time_file
 
+
+######## Check the diffusion data and see if they are compatible with the pipeline
+######## Currently, we need single-shell data for mrtrix
+numberOfShells="$(sort bval | uniq | wc -l | tr -d '[[:space:]]')"
+
+if [ $numberOfShells -gt 2 ]; then
+  #Write an error msg for the user....
+  echo "ERROR! The pipeline currently only supports single-shell dwMRI data! Sorry." > ${path}/${pfx}/README_ERROR.txt
+  #Tie up the download package...
+  cd ${path}
+  tar -zcvf ${pfx}_downloadData.tar.gz ${pfx}/ && rm -R ${pfx}/
+  #Exit the script with an error
+  exit 1
+fi
+
+######## Now check how many real directions the dwi-data include
+######## Sometimes the data includes directions which were recorded double and will confuse the algorithms of mrtrix into assuming a higher number
+######## of available variables for solving the equation system than availble which will lead to error in convergence
+distinctDirections="$(( $(sort bvec | uniq | wc -l) - 1 ))"
+if [ $distinctDirections -ge 6 ] && [ $distinctDirections -lt 15 ]; then lmax=2
+elif [ $distinctDirections -ge 15 ] && [ $distinctDirections -lt 28 ]; then lmax=4
+elif [ $distinctDirections -ge 28 ] && [ $distinctDirections -lt 45 ]; then lmax=6
+elif [ $distinctDirections -ge 45 ] && [ $distinctDirections -lt 66 ]; then lmax=8
+elif [ $distinctDirections -ge 66 ] && [ $distinctDirections -lt 91 ]; then lmax=10
+elif [ $distinctDirections -ge 91 ] && [ $distinctDirections -lt 120 ]; then lmax=12
+elif [ $distinctDirections -ge 120 ] && [ $distinctDirections -lt 153 ]; then lmax=14
+elif [ $distinctDirections -ge 153 ] && [ $distinctDirections -lt 190 ]; then lmax=16
+elif [ $distinctDirections -ge 190 ] && [ $distinctDirections -lt 231 ]; then lmax=18
+elif [ $distinctDirections -ge 231 ]; then lmax=20
+else
+  echo "ERROR! Not enough distinct directions in your dwMRI data! Sorry." > ${path}/${pfx}/README_ERROR.txt
+  #Tie up the download package...
+  cd ${path}
+  tar -zcvf ${pfx}_downloadData.tar.gz ${pfx}/ && rm -R ${pfx}/
+  #Exit the script with an error
+  exit 1
+fi
+
 ########Insert ECC Case here
 #Correct the bvecs
 #xfmrot dwi-ec.ecclog bvecs.dat bvecs-rot.dat
@@ -174,11 +212,11 @@ mrmult ev.mif fa_corr.mif ev_scaled.mif
 #Mask of single-fibre voxels
 erode wmmask.mif -npass 1 - | mrmult fa_corr.mif - - | threshold - -abs 0.7 sf.mif
 #Response function coefficient
-estimate_response dwi.mif -grad btable.b sf.mif response.txt
+estimate_response dwi.mif -grad btable.b -lmax ${lmax} sf.mif response.txt
 #CSD computation
 #csdeconv dwi.mif -grad btable.b response.txt -lmax 8 -mask wmmask.mif CSD8.mif
-csdeconv dwi.mif -grad btable.b response.txt -mask wmmask.mif CSD8.mif
-#csdeconv dwi.mif -grad btable.b response.txt -lmax 6 -mask wmmask.mif CSD8.mif
+#csdeconv dwi.mif -grad btable.b response.txt -mask wmmask.mif CSD8.mif
+csdeconv dwi.mif -grad btable.b response.txt -lmax ${lmax} -mask wmmask.mif CSD8.mif
 
 ##Tell the Mothership we're done here...
 touch ${path}/${pfx}/donePipe.txt

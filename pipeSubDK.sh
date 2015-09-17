@@ -22,9 +22,7 @@ setupPath=$2
 #Init all Toolboxes
 source ${setupPath}/pipeSetup.sh
 
-#Define the folder for the logfiles
-logFolder=${subFolder}/${subID}/logfiles
-#create the folder
+#create the log-folder
 mkdir $logFolder
 #copy the kill-script into the logfolder
 cp ${rootPath}/killPipe.sh $logfolder
