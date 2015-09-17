@@ -33,7 +33,7 @@ jobFile=${logFolder}/jobFile${subID}.txt
 jobListFile=${logFolder}/jobList${subID}.txt
 
 ### 1.) The Preprocessinge-Job ####################################
-sbatch -J pipe_${subID} -t 20:00:00 -n 1 -N 1 -p normal -o ${logFolder}/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} > $jobFile
+sbatch -J pipe_${subID} -t 00:08:00 -n 1 -N 1 -p normal -o ${logFolder}/${subID}_preproc.o%j ${rootPath}/preprocDK.sh ${subFolder}/ ${subID} > $jobFile
 echo "Wait for the Preprocessing-Job to finish"
 #Extract the Job ID from the previously submitted job
 jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
