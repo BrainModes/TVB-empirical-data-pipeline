@@ -44,8 +44,8 @@ echo $jobID >> $jobListFile
 if [ -d "$subFolder/$subID/RAWDATA/BOLD-EPI" ]; then
 	sbatch -J fc_${subID} --dependency=afterok:${jobID} -o ${logFolder}/${subID}_functional.o%j -N 1 -n 1 -p normal -t 00:55:00 ${rootPath}/fmriFC.sh ${subFolder}/ ${subID} > $jobFile
 	#Extract the Job ID from the previously submitted job
-	jobID=$(tail -n 1 $jobFile | cut -f 4 -d " ")
-	echo $jobID >> $jobListFile
+	jobIDBOLD=$(tail -n 1 $jobFile | cut -f 4 -d " ")
+	echo $jobIDBOLD >> $jobListFile
 fi
 
 ### 2.2) RUN generateMask.m ##################################
