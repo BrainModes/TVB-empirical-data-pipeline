@@ -1,0 +1,47 @@
+#!/bin/bash
+
+#This files performs the execution of xargs to compute the fiber tracking
+
+# Check input
+rootPath=$(pwd)
+subFolder=$(pwd)/subjects
+subID="CON02T1"
+scripts_path=${rootPath}/Scripts
+MRTrixDIR=/home/hannelore/mrtrix2/bin
+
+# Get information from batch track script in different variables
+batch=${subFolder}/${subID}/mrtrix_68/masks_68/batch_track.sh
+subjpath=${subFolder}/${subID}/mrtrix_68
+maskfolder=${subjpath}/masks_68
+seed=($(awk '{print $2}' $batch))
+seedCount=($(awk '{print $3}' $batch))
+roi=($(awk '{print $4}' $batch))
+
+
+#### Fiber tracking
+
+#$batch_length = wc -l < ${batch}
+#for (( i = 0; i < 348; i++ ))
+#do
+  #echo "Iteration number $i from 347 (start from 0)"
+
+  #${MRTrixDIR}/streamtrack SD_PROB ${subjpath}/fodf.mif -seed $maskfolder/seedmask${seed[i]}_1mm.nii.gz -include $maskfolder/targetmask${roi[i]}_1mm.nii.gz -minlength 30 -stop -mask ${subFolder}/${subID}/calc_images/wmmask_1mm_68.nii.gz -nomaskinterp -unidirectional -num ${seedCount[i]} ${subjpath}/tracks_68/${seed[i]}_tracksCN.tck
+
+  i=0
+  echo "seedmask1=$maskfolder/seedmask${seed[i]}_1mm.nii.gz"
+  echo "targetmask1=$maskfolder/targetmask${roi[i]}_1mm.nii.gz"
+  echo "seedcount1=${seedCount[i]}"
+
+  i=1
+  echo "seedmask1=$maskfolder/seedmask${seed[i]}_1mm.nii.gz"
+  echo "targetmask1=$maskfolder/targetmask${roi[i]}_1mm.nii.gz"
+  echo "seedcount1=${seedCount[i]}"
+
+  i=2
+  echo "seedmask1=$maskfolder/seedmask${seed[i]}_1mm.nii.gz"
+  echo "targetmask1=$maskfolder/targetmask${roi[i]}_1mm.nii.gz"
+  echo "seedcount1=${seedCount[i]}"
+
+
+#done
+
