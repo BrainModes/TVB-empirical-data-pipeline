@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Input
+subID="CON02T1"
+
+# Check input
+rootPath=$(pwd)
+subFolder=$(pwd)/subjects
+
+#############################################################
+
+cd ${subFolder}/${subID}/mrtrix_68/masks_68
+
+subjpath=${subFolder}/${subID}/mrtrix_68
+maskfolder=${subjpath}/masks_68
+seedmaskindex=seed_index.mat
+roi=target_index.mat
+
+#### Fiber tracking
+
+echo "Currently Processing ROI $seedmaskindex"
+
+
+
+#streamtrack SD_PROB ${subjpath}/CSD8.mif -seed $maskfolder/seedmask${seedmaskindex}_1mm.nii.gz -include $maskfolder/targetmask${roi}_1mm.nii.gz  -minlength 30 -stop -mask ${1}/calc_images/wmmask_1mm_68.nii.gz -nomaskinterp -unidirectional ${subjpath}/tracks_68/${seedmaskindex}_tracksCN.tck
