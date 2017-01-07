@@ -41,11 +41,11 @@ mkdir('TVB')
 cd TVB
 
 %Load the required things from the external toolboxes
-MRI = load([subFolder '/' brainstormPath '/anat/' subID '/subjectimage_T1.mat']);
-cortex = load([subFolder '/' brainstormPath '/anat/' subID '/tess_cortex_pial_low.mat']);
-headmask = load([subFolder '/' brainstormPath '/anat/' subID '/tess_head_mask.mat']);
-channels = load([subFolder '/' brainstormPath '/data/' subID '/@default_study/channel.mat']);
-headmodel = load([subFolder '/' brainstormPath '/data/' subID '/@default_study/headmodel_surf_openmeeg.mat']);
+MRI = load([brainstormPath '/anat/' subID '/subjectimage_T1.mat']);
+cortex = load([brainstormPath '/anat/' subID '/tess_cortex_pial_low.mat']);
+headmask = load([brainstormPath '/anat/' subID '/tess_head_mask.mat']);
+channels = load([brainstormPath '/data/' subID '/@default_study/channel.mat']);
+headmodel = load([brainstormPath '/data/' subID '/@default_study/headmodel_surf_openmeeg.mat']);
 [hdr,~] = niak_read_vol([subFolder '/' reconallPath '/mri/aparc+aseg.nii']);
 vox2ras = hdr.info.mat;
 clear hdr
@@ -56,9 +56,12 @@ for i = 1:68
     labels(cortex.Atlas(3).Scouts(i).Vertices) = i-1; 
 end
 
-%Do the TVB Mesh Clean
-[cortex.Vertices,cortex.Faces,cortex.VertNormals,labels] = removeFB(cortex.Vertices,cortex.Faces,cortex.VertNormals,labels);
+%Convert the LFM
+ProjectionMatrix = bst_gain_orient(headmodel.Gain, headmodel.GridOrient);
+ProjectionMatrix = ProjectionMatrix(1:61,:);
 
+%Do the TVB Mesh Clean
+[cortex.Vertices,cortex.Faces,cortex.VertNormals,labels, ProjectionMatrix] = removeFB(cortex.Vertices,cortex.Faces,cortex.VertNormals,labels, ProjectionMatrix);
 
 %Save the Region Mapping
 dlmwrite([subID '_RegionMapping.txt'],labels,'delimiter',' ')
@@ -70,14 +73,19 @@ vertface2obj(temp(:,1:3),cortex.Faces,[subID '_cortex_brainstorm.obj']);
 dlmwrite('vertices.txt',temp(:,1:3),'delimiter',' ','precision',20);
 dlmwrite('triangles.txt',cortex.Faces - 1,'delimiter',' ','precision',20);
 %Calculate new VertNormals
-temp = cs_scs2mri(MRI,cortex.VertNormals' .*1000)';
-temp = [temp ones(size(temp,1),1)]*vox2ras';
-for i = 1:size(temp,1)
-    temp(i,:) = temp(i,:)/norm(temp(i,:));
-end
-dlmwrite('normals.txt',temp(:,1:3),'delimiter',' ','precision',20);
-zip([subID '_Surface_Cortex'],{'normals.txt','triangles.txt','vertices.txt'})
-delete('vertices.txt'); delete('normals.txt'); delete('triangles.txt');
+if(isfield(cortex,'VertNormals'))
+    temp = cs_scs2mri(MRI,cortex.VertNormals' .*1000)';
+    temp = [temp ones(size(temp,1),1)]*vox2ras';
+    for i = 1:size(temp,1)
+        temp(i,:) = temp(i,:)/norm(temp(i,:));
+    end
+    dlmwrite('normals.txt',temp(:,1:3),'delimiter',' ','precision',20);
+    zip([subID '_Surface_Cortex'],{'normals.txt','triangles.txt','vertices.txt'})
+    delete('vertices.txt'); delete('normals.txt'); delete('triangles.txt');
+else
+    zip([subID '_Surface_Cortex'],{'triangles.txt','vertices.txt'})
+    delete('vertices.txt'); delete('triangles.txt');
+end;
 
 %Convert Brainstorm Face-Mesh to RAS
 temp = cs_scs2mri(MRI,headmask.Vertices' .*1000)';
@@ -86,14 +94,19 @@ vertface2obj(temp(:,1:3),headmask.Faces,[subID '_headmask_brainstorm.obj']);
 dlmwrite('vertices.txt',temp(:,1:3),'delimiter',' ','precision',20);
 dlmwrite('triangles.txt',headmask.Faces - 1,'delimiter',' ','precision',20);
 %Calculate new VertNormals
-temp = cs_scs2mri(MRI,headmask.VertNormals' .*1000)';
-temp = [temp ones(size(temp,1),1)]*vox2ras';
-for i = 1:size(temp,1)
-    temp(i,:) = temp(i,:)/norm(temp(i,:));
-end
-dlmwrite('normals.txt',temp(:,1:3),'delimiter',' ','precision',20);
-zip([subID '_Surface_Face'],{'normals.txt','triangles.txt','vertices.txt'})
-delete('vertices.txt'); delete('normals.txt'); delete('triangles.txt');
+if(isfield(headmask,'VertNormals'))
+    temp = cs_scs2mri(MRI,headmask.VertNormals' .*1000)';
+    temp = [temp ones(size(temp,1),1)]*vox2ras';
+    for i = 1:size(temp,1)
+        temp(i,:) = temp(i,:)/norm(temp(i,:));
+    end
+    dlmwrite('normals.txt',temp(:,1:3),'delimiter',' ','precision',20);
+    zip([subID '_Surface_Face'],{'normals.txt','triangles.txt','vertices.txt'})
+    delete('vertices.txt'); delete('normals.txt'); delete('triangles.txt');
+else
+    zip([subID '_Surface_Face'],{'triangles.txt','vertices.txt'})
+    delete('vertices.txt'); delete('triangles.txt');   
+end;
 
 %Convert Channel Locations
 fid = fopen([subID '_EEGLocations.txt'], 'wt');
@@ -102,15 +115,13 @@ for i = 1:61
     coord = (channels.Channel(i).Loc)';
     coord = cs_scs2mri(MRI,channels.Channel(i).Loc .*1000)';
     coord = [coord ones(size(coord,1),1)]*vox2ras';
-    coord = coord(1:3)/norm(coord(1:3)); %Normalize
+    %coord = coord(1:3)/norm(coord(1:3)); %Normalize
     string2write = [string2write '\n' channels.Channel(i).Name ' ' num2str(coord(1)) ' ' num2str(coord(2)) ' ' num2str(coord(3))];
 end
 fprintf(fid,string2write);
 fclose(fid);
 
 %Save the LFM
-ProjectionMatrix = bst_gain_orient(headmodel.Gain, headmodel.GridOrient);
-ProjectionMatrix = ProjectionMatrix(1:61,:);
 save([subID '_ProjectionMatrix.mat'],'ProjectionMatrix')
 
 end
@@ -379,7 +390,7 @@ Gain = Gain * GridOrient;
 
 end
 
-function [vertices,faces,normals,labels] = removeFB(vertices,faces,normals,labels)
+function [vertices,faces,normals,labels,ProjectionMatrix] = removeFB(vertices,faces,normals,labels,ProjectionMatrix)
     
     
     %Look for all Vertices-indices that occur only once in the Faces-Matrix
@@ -403,6 +414,9 @@ function [vertices,faces,normals,labels] = removeFB(vertices,faces,normals,label
     vertices(FBtri,:) = [];
     normals(FBtri,:) = [];
     
+     %Remove columns from the projection matrix
+     ProjectionMatrix(:,FBtri) = [];
+    
     for i = 1:length(FBtri)
          
         %Get the Rows of the Faces-Matrix including the target-vertex
@@ -415,6 +429,9 @@ function [vertices,faces,normals,labels] = removeFB(vertices,faces,normals,label
         %Remove Vertices from Labeling
         labels(FBtri(i)) = [];
         labels(labels > FBtri(i)) = labels(labels > FBtri(i)) - 1;
+        
+ 
+        
         
         FBtri = FBtri - 1;
         
