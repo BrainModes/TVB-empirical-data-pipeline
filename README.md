@@ -37,7 +37,7 @@ All these settings are located within the <b>pipeSetup.sh</b> script. Open it us
 Note that in the picture above, FREESURFER is also installed on the HPC as a module and can thus be simply loaded as a module instead of setting it up manually.<br>
 
 <li><b>Data structure:</b><br>
-<img src="doc/initTree.png"/><br>
+<img src="doc/init_Tree.png"/><br>
 First, make sure that the data structure inside your subject folder looks exactly like displayed in the picture above.
 This means that inside your actual subject folder, there must be a folder named "RAWDATA", containing the different
 MR images recorded by using the three different imaging modalities (anatomical, DTI, fMRI).Having fMRI images is optional, meaning you can run the pipeline using only anatomical and diffusion data which will then create just the structural connectivity and not the functional connectivity matrix.<br>
